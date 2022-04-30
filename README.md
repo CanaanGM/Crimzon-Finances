@@ -11,6 +11,10 @@ API for handling finance related crap
 
   Persistence depends on Application and Domain
 
+
+  CQRS -> Command Query Responsibility Segregation
+  
+
 ## Responsibility
 
 #### API
