@@ -1,3 +1,8 @@
+using Application.Core;
+using Application.Purchases;
+
+using MediatR;
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 
 using Persistence;
@@ -12,11 +17,20 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 
-
+// to be wxtracted into extension class 
 builder.Services.AddDbContext<DataContext>(options =>
 {
     options.UseSqlServer(builder.Configuration["ConnectionStrings:SqlServer"]);
 });
+
+builder.Services.AddCors(options => options.AddPolicy("CorsPolicy", policy =>
+{
+    policy.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin();
+}));
+
+builder.Services.AddMediatR(typeof(List.Handler).Assembly);
+
+builder.Services.AddAutoMapper(typeof(MappingProfiles).Assembly);
 
 var app = builder.Build();
 
@@ -29,7 +43,6 @@ try
 {
     var context = services.GetRequiredService<DataContext>();
     await context.Database.MigrateAsync();
-
     await Seed.SeedData(context);
 }
 catch (Exception ex)
@@ -48,6 +61,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors("CorsPolicy"); 
 app.UseAuthorization();
 
 app.MapControllers();

@@ -72,7 +72,8 @@ namespace Persistence
                         PriceInDollar = 0.0,
                         PurchaseDate = DateTime.UtcNow,
                         Reccuring = "Test",
-                        Seller = "Test"
+                        Seller = "Test",
+                        Invoice = "Test",
                     }
                 };
             await context.Purchases.AddRangeAsync(purchases);

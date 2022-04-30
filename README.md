@@ -13,7 +13,7 @@ API for handling finance related crap
 
 
   CQRS -> Command Query Responsibility Segregation
-  
+
 
 ## Responsibility
 
@@ -37,6 +37,8 @@ API for handling finance related crap
  1. Entity Framework Core
  1. Entity Framework Core Tools
  2. Entity Framework Core Design
+ 3. MediatR.Extensions.Microsoft.DependencyInjection
+ 4. AutoMapper.Extensions.Microsoft.DependencyInjection
 
 ### Commands
 #### Migrations
