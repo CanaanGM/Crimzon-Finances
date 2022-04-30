@@ -25,10 +25,21 @@ API for handling finance related crap
 
 #### Persistence
   contains the SQL connection and generates the SQL Code needed
+  #### packages
+  1. microsoft entity frameworkcore sqlserver
 
 ## Packages:
  
- 1 
+ 1. Entity Framework Core
+ 1. Entity Framework Core Tools
+ 2. Entity Framework Core Design
 
 ### Commands
+#### Migrations
+```
+    dotnet ef migrations add initial -p persistence/ -s API/
+
+    dotnet ef database update
+```
+
 

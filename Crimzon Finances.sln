@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32228.430
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrimzonFinancesAPI", "CrimzonFinancesAPI\CrimzonFinancesAPI.csproj", "{63D1D4D7-ECDF-4049-AEDD-1509BEE563B5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain", "Domain\Domain.csproj", "{22B5D67E-83E5-4995-8D06-C5E4CAB8F2A7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csproj", "{22B5D67E-83E5-4995-8D06-C5E4CAB8F2A7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application", "Application\Application.csproj", "{EFCAEA0D-379A-455E-B8B2-798ADB6D92A6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application", "Application\Application.csproj", "{EFCAEA0D-379A-455E-B8B2-798ADB6D92A6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Persistence", "Persistence\Persistence.csproj", "{2BD110DA-E1C7-49C7-8A3C-C02BBD638F77}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Persistence", "Persistence\Persistence.csproj", "{2BD110DA-E1C7-49C7-8A3C-C02BBD638F77}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "API", "API\API.csproj", "{286BA041-8A50-4FEB-9C33-B4B5614C37C2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,14 +19,6 @@ Global
 		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{63D1D4D7-ECDF-4049-AEDD-1509BEE563B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{63D1D4D7-ECDF-4049-AEDD-1509BEE563B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{63D1D4D7-ECDF-4049-AEDD-1509BEE563B5}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{63D1D4D7-ECDF-4049-AEDD-1509BEE563B5}.Debug|x64.Build.0 = Debug|Any CPU
-		{63D1D4D7-ECDF-4049-AEDD-1509BEE563B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{63D1D4D7-ECDF-4049-AEDD-1509BEE563B5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{63D1D4D7-ECDF-4049-AEDD-1509BEE563B5}.Release|x64.ActiveCfg = Release|Any CPU
-		{63D1D4D7-ECDF-4049-AEDD-1509BEE563B5}.Release|x64.Build.0 = Release|Any CPU
 		{22B5D67E-83E5-4995-8D06-C5E4CAB8F2A7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{22B5D67E-83E5-4995-8D06-C5E4CAB8F2A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{22B5D67E-83E5-4995-8D06-C5E4CAB8F2A7}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -51,6 +43,14 @@ Global
 		{2BD110DA-E1C7-49C7-8A3C-C02BBD638F77}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2BD110DA-E1C7-49C7-8A3C-C02BBD638F77}.Release|x64.ActiveCfg = Release|Any CPU
 		{2BD110DA-E1C7-49C7-8A3C-C02BBD638F77}.Release|x64.Build.0 = Release|Any CPU
+		{286BA041-8A50-4FEB-9C33-B4B5614C37C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{286BA041-8A50-4FEB-9C33-B4B5614C37C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{286BA041-8A50-4FEB-9C33-B4B5614C37C2}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{286BA041-8A50-4FEB-9C33-B4B5614C37C2}.Debug|x64.Build.0 = Debug|Any CPU
+		{286BA041-8A50-4FEB-9C33-B4B5614C37C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{286BA041-8A50-4FEB-9C33-B4B5614C37C2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{286BA041-8A50-4FEB-9C33-B4B5614C37C2}.Release|x64.ActiveCfg = Release|Any CPU
+		{286BA041-8A50-4FEB-9C33-B4B5614C37C2}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
