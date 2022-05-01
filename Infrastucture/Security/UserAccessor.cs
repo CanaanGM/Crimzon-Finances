@@ -23,5 +23,6 @@ namespace Infrastucture.Security
         {
             return  _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Name);
         }
+        public string GetUserId() => _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
     }
 }

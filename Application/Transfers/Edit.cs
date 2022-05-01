@@ -1,5 +1,6 @@
 ﻿using Application.Core;
 using Application.DTOs;
+using Application.Interfaces;
 
 using AutoMapper;
 
@@ -8,6 +9,8 @@ using Domain;
 using FluentValidation;
 
 using MediatR;
+
+using Microsoft.EntityFrameworkCore;
 
 using Persistence;
 
@@ -34,17 +37,21 @@ namespace Application.Transfers
         {
             private readonly DataContext _dataContext;
             private readonly IMapper _mapper;
+            private readonly IUserAccessor _userAccessor;
 
-            public Handler(DataContext dataContext, IMapper mapper)
+            public Handler(DataContext dataContext, IMapper mapper, IUserAccessor userAccessor)
             {
                 _dataContext = dataContext;
                 _mapper = mapper;
+                _userAccessor = userAccessor;
             }
 
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
                 var transfer = await _dataContext.Transfers.FindAsync(request.Id);
-                if (transfer == null) return null;
+                var user = await _dataContext.Users.FirstOrDefaultAsync(x => x.Id == _userAccessor.GetUserId());
+                if (transfer == null || user == null || transfer.UserId != user.Id)
+                    return Result<Unit>.Failure("Failed to Edit transfer . . .");
 
                 _mapper.Map(request.Transfer, transfer);
                 var res = await _dataContext.SaveChangesAsync() > 0;

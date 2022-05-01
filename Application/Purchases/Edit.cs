@@ -1,13 +1,14 @@
 ﻿using Application.Core;
 using Application.DTOs;
+using Application.Interfaces;
 
 using AutoMapper;
-
-using Domain;
 
 using FluentValidation;
 
 using MediatR;
+
+using Microsoft.EntityFrameworkCore;
 
 using Persistence;
 
@@ -34,17 +35,23 @@ namespace Application.Purchases
         {
             private readonly DataContext _dataContext;
             private readonly IMapper _mapper;
+            private readonly IUserAccessor _userAccessor;
 
-            public Handler(DataContext dataContext, IMapper mapper)
+            public Handler(DataContext dataContext, IMapper mapper, IUserAccessor userAccessor)
             {
                 _dataContext = dataContext;
                 _mapper = mapper;
+                _userAccessor = userAccessor;
             }
 
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
                 var purchase = await _dataContext.Purchases.FindAsync(request.Id);
-                if (purchase == null) return null; // maybe return Failure
+                var user = await _dataContext.Users.FirstOrDefaultAsync(x =>
+            x.Id == _userAccessor.GetUserId());
+
+                if (user == null || purchase == null || purchase.UserId != user.Id) 
+                        return Result<Unit>.Failure("Failed to edit purchase");
 
                 _mapper.Map(request.Purchase, purchase);
                 var res = await _dataContext.SaveChangesAsync() > 0;

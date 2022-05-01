@@ -20,5 +20,8 @@ namespace Domain
         public string Reccuring { get; set; }
         public string Invoice { get; set; } // to be an image later
 
+        public string UserId { get; set; }
+        public AppUser User { get; set; }
+
     }
 }

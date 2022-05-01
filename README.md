@@ -11,6 +11,8 @@ API for handling finance related crap
 
   Persistence depends on Application and Domain
 
+  Infrastructure depends on Application
+  API depends on INfastruction caue of dependancy injection to work
 
   CQRS -> Command Query Responsibility Segregation
 
@@ -31,6 +33,10 @@ API for handling finance related crap
 
 #### Persistence
   contains the SQL connection and generates the SQL Code needed
+
+#### Infrastructure
+  houses security related stuff
+  Interfaces are in Application project, implementaion in Infrastructure.
   #### packages
   1. microsoft entity frameworkcore sqlserver
 
@@ -43,6 +49,7 @@ API for handling finance related crap
  4. AutoMapper.Extensions.Microsoft.DependencyInjection
  5. FluentValidation.AspNetCore
  6. Microsoft.AspNetCore.Identity.EntityFrameworkCore 
+ 7. Microsoft.AspNetCore.Authentication.JwtBearer
 
 ### Commands
 #### Migrations
@@ -51,5 +58,13 @@ API for handling finance related crap
 
     dotnet ef database update
 ```
+#### User Secerets
 
+```
+dotnet user-secret init
+dotnet user-secret add TokenKey:Bullshit -s API 
+dotnet user-secret add DATABASE_USER:Bullshit -s API 
+dotnet user-secret add DATABASE_PASS:Bullshit -s API 
+dotnet user-secret add DATABASE_STRING:Bullshit -s API 
+```
 

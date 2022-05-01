@@ -48,13 +48,17 @@ namespace Application.Purchases
                     x.UserName == _userAccessor.GetUsername()
                   );
 
+                if (user == null) return Result<Unit>.Failure("Failed to create purchase . . .");
 
-                _dataContext.Purchases.Add(_mapper.Map<Purchase>( request.Purchase));
+                var purchase = _mapper.Map<Purchase>(request.Purchase);
+                purchase.User = user;
+                purchase.UserId = user.Id;
+                user.Purchases.Add(purchase);
+
+                _dataContext.Purchases.Add(purchase);
                 var result = await _dataContext.SaveChangesAsync() > 0;
 
-               return !result ? Result<Unit>.Failure("Failed to create Purchase") : Result<Unit>.Success(Unit.Value);
-
-                 
+                return !result ? Result<Unit>.Failure("Failed to create Purchase") : Result<Unit>.Success(Unit.Value);
             }
         }
     }

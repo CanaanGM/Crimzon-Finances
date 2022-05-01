@@ -1,21 +1,14 @@
 ﻿using Application.Core;
 using Application.DTOs;
+using Application.Interfaces;
 
 using AutoMapper;
-
-using Domain;
 
 using MediatR;
 
 using Microsoft.EntityFrameworkCore;
 
 using Persistence;
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Purchases
 {
@@ -28,15 +21,26 @@ namespace Application.Purchases
         {
             private readonly DataContext _context;
             private readonly IMapper _mapper;
+            private readonly IUserAccessor _userAccessor;
 
-            public Handler(DataContext context, IMapper mapper)// this context can be interchanged for another context
+            public Handler(DataContext context, IMapper mapper, IUserAccessor userAccessor)// this context can be interchanged for another context
             {
                 _context = context;
                 _mapper = mapper;
+                _userAccessor = userAccessor;
             }
+
             public async Task<Result<List<PurchaseReadDto>>> Handle(Query request, CancellationToken cancellationToken)
             {
-                return  Result<List<PurchaseReadDto>>.Success(_mapper.Map<List<PurchaseReadDto>>( await _context.Purchases.ToListAsync() ));
+                var user = await _context.Users.FirstOrDefaultAsync(x =>
+                            x.Id == _userAccessor.GetUserId());
+                if (user == null ) return Result<List<PurchaseReadDto>>.Failure("bitch");
+                var purchases =_mapper.Map<List<PurchaseReadDto>>(
+                    await _context.Purchases.Where(x=>x.UserId == user.Id).ToListAsync());
+
+                return purchases == null
+                    ? Result<List<PurchaseReadDto>>.Failure("Failed to get purchases")
+                    : Result<List<PurchaseReadDto>>.Success(purchases);
             }
         }
     }

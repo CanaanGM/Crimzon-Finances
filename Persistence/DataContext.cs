@@ -18,6 +18,24 @@ namespace Persistence
         public DbSet<Purchase> Purchases { get; set; }
         public DbSet<Transfer> Transfers { get; set; }
 
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+
+            builder.Entity<AppUser>()
+                .HasMany(x => x.Purchases)
+                .WithOne(q => q.User)
+                .HasForeignKey(w => w.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+                ;
+
+            builder.Entity<AppUser>()
+                .HasMany(a => a.Transfers)
+                .WithOne(q => q.User)
+                .HasForeignKey(t => t.UserId)
+                .OnDelete(DeleteBehavior.Cascade)
+                ;
+        }
 
     }
 }

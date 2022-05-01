@@ -39,6 +39,9 @@ namespace Persistence
                         DateWasMade = DateTime.UtcNow,
                         TransferType = "Test",
                         RecieverAccount= "Test",
+                        UserId = new Guid().ToString(),
+                        User = new AppUser{ DisplayName = "Test", Email= "test@test.com", UserName = "test"},
+
                     }
                 };
             await context.Transfers.AddRangeAsync(transfers);
@@ -61,6 +64,9 @@ namespace Persistence
                         Reccuring = "Test",
                         Seller = "Test",
                         Invoice = "Test",
+                        UserId = new Guid().ToString(),
+                        User = new AppUser{ DisplayName = "Test", Email= "test@test.com", UserName = "test"},
+
                     }
                 };
             await context.Purchases.AddRangeAsync(purchases);

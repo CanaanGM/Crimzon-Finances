@@ -1,6 +1,9 @@
 ﻿using Application.Core;
+using Application.Interfaces;
 
 using MediatR;
+
+using Microsoft.EntityFrameworkCore;
 
 using Persistence;
 
@@ -16,16 +19,21 @@ namespace Application.Transfers
         public class Handler : IRequestHandler<Command, Result<Unit>>
         {
             private readonly DataContext _dataContext;
+            private readonly IUserAccessor _userAccessor;
 
-            public Handler(DataContext dataContext)
+            public Handler(DataContext dataContext, IUserAccessor userAccessor)
             {
                 _dataContext = dataContext;
+                _userAccessor = userAccessor;
             }
 
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
                 var transfer = await _dataContext.Transfers.FindAsync(request.Id);
-                if (transfer == null) return null;
+                var user = await _dataContext.Users.FirstOrDefaultAsync(x=>x.Id == _userAccessor.GetUserId());
+
+                if (transfer == null || user == null || transfer.UserId != user.Id)
+                    return Result<Unit>.Failure("Failed to delete. . .");
 
                 _dataContext.Remove(transfer);
                 var res = await _dataContext.SaveChangesAsync() > 0;

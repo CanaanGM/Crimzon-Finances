@@ -14,7 +14,7 @@ namespace Domain
         public string DisplayName { get; set; }
         public string? Bio { get; set; }
 
-        ICollection<Purchase> purchases { get; set; } = new List<Purchase>();
-        ICollection<Transfer> transfer { get; set; } = new List<Transfer>();    
+        public ICollection<Purchase> Purchases { get; set; } = new List<Purchase>();
+        public ICollection<Transfer> Transfers { get; set; } = new List<Transfer>();    
     }
 }

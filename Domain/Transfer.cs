@@ -19,5 +19,7 @@ namespace Domain
         public string RecieverAccount { get; set; }
         public string TransferType { get; set; } // CliQ, Normal Transfer, Wire , etc . . .
 
+        public string UserId { get; set; }
+        public AppUser User { get; set; }
     }
 }
