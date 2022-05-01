@@ -4,7 +4,7 @@ using MediatR;
 
 using Persistence;
 
-namespace Application.Purchases
+namespace Application.Transfers
 {
     public class Delete
     {
@@ -24,13 +24,13 @@ namespace Application.Purchases
 
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
-                var purchase = await _dataContext.Purchases.FindAsync(request.Id);
-                if (purchase == null) return null;
+                var transfer = await _dataContext.Transfers.FindAsync(request.Id);
+                if (transfer == null) return null;
 
-                _dataContext.Remove(purchase);
+                _dataContext.Remove(transfer);
                 var res = await _dataContext.SaveChangesAsync() > 0;
                 return !res
-                    ? Result<Unit>.Failure("Failed to Delete purchase")
+                    ? Result<Unit>.Failure("Failed to Delete Transfer")
                     : Result<Unit>.Success(Unit.Value);
             }
         }

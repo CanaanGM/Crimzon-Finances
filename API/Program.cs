@@ -1,40 +1,25 @@
-using Application.Core;
-using Application.Purchases;
+using API.Extensions;
+using API.Middleware;
 
-using MediatR;
-using AutoMapper;
+using Application.Purchases;
+using FluentValidation.AspNetCore;
+
 using Microsoft.EntityFrameworkCore;
 
 using Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-
-// to be wxtracted into extension class 
-builder.Services.AddDbContext<DataContext>(options =>
+builder.Services.AddControllers().AddFluentValidation(config =>
 {
-    options.UseSqlServer(builder.Configuration["ConnectionStrings:SqlServer"]);
+    config.RegisterValidatorsFromAssemblyContaining<Create>();
 });
 
-builder.Services.AddCors(options => options.AddPolicy("CorsPolicy", policy =>
-{
-    policy.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin();
-}));
 
-builder.Services.AddMediatR(typeof(List.Handler).Assembly);
-
-builder.Services.AddAutoMapper(typeof(MappingProfiles).Assembly);
+//! extension custom class
+ApplicationServiceExtensions.AddApplicationServices(builder.Services, builder.Configuration);
 
 var app = builder.Build();
-
-
 
 
 using var scope = app.Services.CreateScope();
@@ -47,21 +32,15 @@ try
 }
 catch (Exception ex)
 {
-
     var logger = services.GetRequiredService<ILogger<Program>>();
     logger.LogError(ex, "Migratoin Failed!");
 }
 
+app.UseSwagger();
+app.UseSwaggerUI();
+app.UseMiddleware<ExceptionMiddleware>();
 
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-
-app.UseCors("CorsPolicy"); 
+app.UseCors("CorsPolicy");
 app.UseAuthorization();
 
 app.MapControllers();

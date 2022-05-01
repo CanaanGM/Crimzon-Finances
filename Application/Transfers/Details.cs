@@ -12,16 +12,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.Purchases
+namespace Application.Transfers
 {
     public class Details
     {
-        public class Query : IRequest<Result<Purchase>>
+        public class Query : IRequest<Result<Transfer>>
         {
             public Guid Id { get; set; }
         }
 
-        public class Handler : IRequestHandler<Query, Result<Purchase>>
+        public class Handler : IRequestHandler<Query, Result<Transfer>>
         {
             private readonly DataContext _dataContext;
 
@@ -29,9 +29,9 @@ namespace Application.Purchases
             {
                 _dataContext = dataContext;
             }
-            public async Task<Result<Purchase>> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<Result<Transfer>> Handle(Query request, CancellationToken cancellationToken)
             {
-                return Result<Purchase>.Success( await _dataContext.Purchases.FindAsync(request.Id) );
+                return Result<Transfer>.Success( await _dataContext.Transfers.FindAsync(request.Id) );
             }
         }
     }

@@ -1,0 +1,39 @@
+﻿using Application.Core;
+using Application.Purchases;
+
+using MediatR;
+
+using Microsoft.EntityFrameworkCore;
+
+using Persistence;
+
+namespace API.Extensions
+{
+    public static class ApplicationServiceExtensions
+    {
+        public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration config)
+        {
+            services.AddEndpointsApiExplorer();
+            services.AddSwaggerGen();
+
+
+            // to be wxtracted into extension class 
+            services.AddDbContext<DataContext>(options =>
+            {
+                options.UseSqlServer(config["ConnectionStrings:SqlServer"]);
+            });
+
+            services.AddCors(options => options.AddPolicy("CorsPolicy", policy =>
+            {
+                policy.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin();
+            }));
+
+            services.AddMediatR(typeof(List.Handler).Assembly);
+
+            services.AddAutoMapper(typeof(MappingProfiles).Assembly);
+
+            return services;
+
+        }
+    }
+}

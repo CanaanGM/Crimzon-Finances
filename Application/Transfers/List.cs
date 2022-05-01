@@ -14,14 +14,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.Purchases
+namespace Application.Transfers
 {
     public class List
     {
-        public class Query : IRequest<Result<List<Purchase>>> // later to be a paginated list
+        public class Query : IRequest<Result<List<Transfer>>> // later to be a paginated list
         { }
 
-        public class Handler : IRequestHandler<Query, Result<List<Purchase>>>
+        public class Handler : IRequestHandler<Query, Result<List<Transfer>>>
         {
             private readonly DataContext _context;
 
@@ -29,9 +29,9 @@ namespace Application.Purchases
             {
                 _context = context;
             }
-            public async Task<Result<List<Purchase>>> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<Result<List<Transfer>>> Handle(Query request, CancellationToken cancellationToken)
             {
-                return Result<List<Purchase>>.Success(await _context.Purchases.ToListAsync());
+                return Result<List<Transfer>>.Success(await _context.Transfers.ToListAsync());
             }
         }
     }

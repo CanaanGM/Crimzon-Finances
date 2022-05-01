@@ -1,4 +1,5 @@
 ﻿using Application.Core;
+using Application.Purchases;
 
 using Domain;
 
@@ -8,19 +9,19 @@ using MediatR;
 
 using Persistence;
 
-namespace Application.Purchases
+namespace Application.Transfers
 {
     public class Create
     {
         public class Command : IRequest<Result<Unit>>
         {
-            public Purchase Purchase { get; set; }
+            public Transfer Transfer { get; set; }
         }
 
         public class CommandValidator : AbstractValidator<Command>
         {
             public CommandValidator() =>
-                RuleFor(x => x.Purchase).SetValidator(new PurchaseValidator());
+                RuleFor(x => x.Transfer).SetValidator(new TransferValidator());
         }
 
         public class Handler : IRequestHandler<Command, Result<Unit>>
@@ -34,12 +35,12 @@ namespace Application.Purchases
 
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
-                _dataContext.Purchases.Add(request.Purchase);
+                _dataContext.Transfers.Add(request.Transfer);
                 var result = await _dataContext.SaveChangesAsync() > 0;
 
-               return !result ? Result<Unit>.Failure("Failed to create Purchase") : Result<Unit>.Success(Unit.Value);
+                return !result ? Result<Unit>.Failure("Failed to create Transfer") : Result<Unit>.Success(Unit.Value);
 
-                 
+
             }
         }
     }
