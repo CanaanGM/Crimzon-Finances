@@ -1,5 +1,8 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,10 +21,14 @@ namespace Domain
         public string Description { get; set; }
         public string PaymentMethod { get; set; }
         public string Reccuring { get; set; }
-        public string Invoice { get; set; } // to be an image later
+        public ICollection<Photo> Invoice { get; set; } = new List<Photo>();
 
+        [NotMapped]
+        public IFormFileCollection Files { get; set; } 
         public string UserId { get; set; }
         public AppUser User { get; set; }
+
+
 
     }
 }

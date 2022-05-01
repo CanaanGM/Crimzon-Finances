@@ -23,7 +23,11 @@ namespace API.Extensions
             // to be wxtracted into extension class 
             services.AddDbContext<DataContext>(options =>
             {
-                options.UseSqlServer(config["ConnectionStrings:SqlServer"]);
+                options.UseSqlServer(config["ConnectionStrings:SqlServer"], conf =>
+                {
+                    conf.EnableRetryOnFailure(); 
+                });
+               
             });
 
             services.AddCors(options => options.AddPolicy("CorsPolicy", policy =>

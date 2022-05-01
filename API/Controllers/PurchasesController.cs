@@ -25,7 +25,7 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(PurchaseWriteDto purchase)
+        public async Task<IActionResult> Create(  PurchaseWriteDto purchase)
         {
             return HandleResult(await Mediator.Send(new Create.Command { Purchase = purchase }));
         }

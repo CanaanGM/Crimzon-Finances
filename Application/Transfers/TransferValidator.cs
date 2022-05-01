@@ -27,6 +27,7 @@ namespace Application.Transfers
             RuleFor(x => x.Reciever).NotEmpty();
             RuleFor(x => x.RecieverAccount).NotEmpty();
             RuleFor(x => x.TransferType).NotEmpty();
+
         }
     }
 }

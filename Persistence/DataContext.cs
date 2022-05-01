@@ -35,6 +35,12 @@ namespace Persistence
                 .HasForeignKey(t => t.UserId)
                 .OnDelete(DeleteBehavior.Cascade)
                 ;
+
+            //builder.Entity<Purchase>()
+            //    .HasMany(a => a.Invoice)
+            //    .WithOne(q => q.Purchase)
+            //    .HasForeignKey(w => w.PurchaseId)
+            //    .OnDelete(DeleteBehavior.Cascade);
         }
 
     }
