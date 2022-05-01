@@ -17,6 +17,7 @@ namespace Application.Core
         {
             //CreateMap<>
             CreateMap<Purchase, Purchase>();
+            CreateMap<Transfer, Transfer>();
         }
     }
 }

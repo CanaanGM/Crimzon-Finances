@@ -2,8 +2,12 @@ using API.Extensions;
 using API.Middleware;
 
 using Application.Purchases;
+
+using Domain;
+
 using FluentValidation.AspNetCore;
 
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 using Persistence;
@@ -15,20 +19,20 @@ builder.Services.AddControllers().AddFluentValidation(config =>
     config.RegisterValidatorsFromAssemblyContaining<Create>();
 });
 
-
-//! extension custom class
+//! extension custom classes
 ApplicationServiceExtensions.AddApplicationServices(builder.Services, builder.Configuration);
+IdentityServiceExtension.AddIdentityServices(builder.Services, builder.Configuration);
 
 var app = builder.Build();
-
 
 using var scope = app.Services.CreateScope();
 var services = scope.ServiceProvider;
 try
 {
     var context = services.GetRequiredService<DataContext>();
+    var userManager = services.GetRequiredService<UserManager<AppUser>>();
     await context.Database.MigrateAsync();
-    await Seed.SeedData(context);
+    await Seed.SeedData(context, userManager);
 }
 catch (Exception ex)
 {

@@ -24,6 +24,8 @@ API for handling finance related crap
 #### Application
   Proccess the business Logic
 
+  fluent validation
+
 #### Domain
   Contains the business entities and is the center of the universe!
 
@@ -39,6 +41,8 @@ API for handling finance related crap
  2. Entity Framework Core Design
  3. MediatR.Extensions.Microsoft.DependencyInjection
  4. AutoMapper.Extensions.Microsoft.DependencyInjection
+ 5. FluentValidation.AspNetCore
+ 6. Microsoft.AspNetCore.Identity.EntityFrameworkCore 
 
 ### Commands
 #### Migrations
