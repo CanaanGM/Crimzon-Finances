@@ -18,6 +18,14 @@ namespace Application.Core
             //CreateMap<>
             CreateMap<Purchase, Purchase>();
             CreateMap<Transfer, Transfer>();
+
+            //DTOz
+            //CreateMap<Transfer, TransferWriteDto>().ReverseMap();
+            //CreateMap<>().ReverseMap();
+            //CreateMap<>().ReverseMap();
+            //CreateMap<>().ReverseMap();
+            //CreateMap<>().ReverseMap();
+            //CreateMap<>().ReverseMap();
         }
     }
 }
