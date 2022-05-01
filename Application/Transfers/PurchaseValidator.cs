@@ -1,4 +1,6 @@
-﻿using Domain;
+﻿using Application.DTOs;
+
+using Domain;
 
 using FluentValidation;
 
@@ -10,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Application.Transfers
 {
-    public class TransferValidator : AbstractValidator<Transfer>
+    public class TransferValidator : AbstractValidator<TransferWriteDto>
     {
         public TransferValidator()
         {

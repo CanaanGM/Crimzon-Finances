@@ -1,4 +1,5 @@
-﻿using Application.Transfers;
+﻿using Application.DTOs;
+using Application.Transfers;
 
 using Domain;
 using Microsoft.AspNetCore.Mvc;
@@ -23,16 +24,15 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(Transfer transfer)
+        public async Task<IActionResult> Create(TransferWriteDto transfer)
         {
             return HandleResult(await Mediator.Send(new Create.Command { Transfer = transfer }));
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(Guid id, [FromBody] Transfer transfer)
+        public async Task<IActionResult> Update(Guid id, [FromBody] TransferWriteDto transfer)
         {
-            transfer.Id = id;
-            return HandleResult(await Mediator.Send(new Edit.Command { Transfer = transfer }));
+            return HandleResult(await Mediator.Send(new Edit.Command {Id=id, Transfer = transfer }));
         }
 
         [HttpDelete("{id}")]

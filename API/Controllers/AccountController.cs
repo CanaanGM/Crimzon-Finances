@@ -1,7 +1,9 @@
-﻿using API.DTOs;
-using API.Services;
+﻿using API.Services;
+
+using Application.DTOs;
 
 using Domain;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;

@@ -1,4 +1,5 @@
 ﻿using Application.Core;
+using Application.DTOs;
 
 using AutoMapper;
 
@@ -16,13 +17,17 @@ namespace Application.Transfers
     {
         public class Command : IRequest<Result<Unit>>
         {
-            public Transfer Transfer { get; set; }
+            public Guid Id { get; set; }
+            public TransferWriteDto Transfer { get; set; }
         }
 
         public class CommandValidator : AbstractValidator<Command>
         {
-            public CommandValidator() =>
+            public CommandValidator()
+            { 
+                RuleFor(c => c.Id).NotEmpty();
                 RuleFor(x => x.Transfer).SetValidator(new TransferValidator());
+            }
         }
 
         public class Handler : IRequestHandler<Command, Result<Unit>>
@@ -38,7 +43,7 @@ namespace Application.Transfers
 
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
-                var transfer = await _dataContext.Transfers.FindAsync(request.Transfer.Id);
+                var transfer = await _dataContext.Transfers.FindAsync(request.Id);
                 if (transfer == null) return null;
 
                 _mapper.Map(request.Transfer, transfer);

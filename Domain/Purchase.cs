@@ -19,5 +19,6 @@ namespace Domain
         public string PaymentMethod { get; set; }
         public string Reccuring { get; set; }
         public string Invoice { get; set; } // to be an image later
+
     }
 }

@@ -1,4 +1,7 @@
 ﻿using Application.Core;
+using Application.DTOs;
+
+using AutoMapper;
 
 using Domain;
 
@@ -16,22 +19,24 @@ namespace Application.Purchases
 {
     public class Details
     {
-        public class Query : IRequest<Result<Purchase>>
+        public class Query : IRequest<Result<PurchaseReadDto>>
         {
             public Guid Id { get; set; }
         }
 
-        public class Handler : IRequestHandler<Query, Result<Purchase>>
+        public class Handler : IRequestHandler<Query, Result<PurchaseReadDto>>
         {
             private readonly DataContext _dataContext;
+            private readonly IMapper _mapper;
 
-            public Handler(DataContext dataContext)
+            public Handler(DataContext dataContext, IMapper mapper)
             {
                 _dataContext = dataContext;
+                _mapper = mapper;
             }
-            public async Task<Result<Purchase>> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<Result<PurchaseReadDto>> Handle(Query request, CancellationToken cancellationToken)
             {
-                return Result<Purchase>.Success( await _dataContext.Purchases.FindAsync(request.Id) );
+                return Result<PurchaseReadDto>.Success(_mapper.Map< PurchaseReadDto>( await _dataContext.Purchases.FindAsync(request.Id) ));
             }
         }
     }

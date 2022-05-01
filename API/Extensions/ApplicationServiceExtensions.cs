@@ -1,5 +1,8 @@
 ﻿using Application.Core;
+using Application.Interfaces;
 using Application.Purchases;
+
+using Infrastucture.Security;
 
 using MediatR;
 
@@ -31,6 +34,8 @@ namespace API.Extensions
             services.AddMediatR(typeof(List.Handler).Assembly);
 
             services.AddAutoMapper(typeof(MappingProfiles).Assembly);
+
+            services.AddScoped<IUserAccessor, UserAccessor>();
 
             return services;
 

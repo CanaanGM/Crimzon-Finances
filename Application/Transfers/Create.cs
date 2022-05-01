@@ -1,5 +1,8 @@
 ﻿using Application.Core;
+using Application.DTOs;
 using Application.Purchases;
+
+using AutoMapper;
 
 using Domain;
 
@@ -15,7 +18,7 @@ namespace Application.Transfers
     {
         public class Command : IRequest<Result<Unit>>
         {
-            public Transfer Transfer { get; set; }
+            public TransferWriteDto Transfer { get; set; }
         }
 
         public class CommandValidator : AbstractValidator<Command>
@@ -27,15 +30,17 @@ namespace Application.Transfers
         public class Handler : IRequestHandler<Command, Result<Unit>>
         {
             private readonly DataContext _dataContext;
+            private readonly IMapper _mapper;
 
-            public Handler(DataContext dataContext)
+            public Handler(DataContext dataContext, IMapper mapper)
             {
                 _dataContext = dataContext;
+                _mapper = mapper;
             }
 
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
-                _dataContext.Transfers.Add(request.Transfer);
+                _dataContext.Transfers.Add(_mapper.Map<Transfer>( request.Transfer));
                 var result = await _dataContext.SaveChangesAsync() > 0;
 
                 return !result ? Result<Unit>.Failure("Failed to create Transfer") : Result<Unit>.Success(Unit.Value);

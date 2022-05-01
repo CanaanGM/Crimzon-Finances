@@ -1,4 +1,5 @@
 ﻿using Application.Core;
+using Application.DTOs;
 
 using AutoMapper;
 
@@ -16,13 +17,17 @@ namespace Application.Purchases
     {
         public class Command : IRequest<Result<Unit>>
         {
-            public Purchase Purchase { get; set; }
+            public Guid Id { get; set; }
+            public PurchaseWriteDto Purchase { get; set; }
         }
 
         public class CommandValidator : AbstractValidator<Command>
         {
-            public CommandValidator() =>
+            public CommandValidator()
+            {
+                RuleFor(c => c.Id).NotEmpty();
                 RuleFor(x => x.Purchase).SetValidator(new PurchaseValidator());
+            }
         }
 
         public class Handler : IRequestHandler<Command, Result<Unit>>
@@ -38,8 +43,8 @@ namespace Application.Purchases
 
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
-                var purchase = await _dataContext.Purchases.FindAsync(request.Purchase.Id);
-                if (purchase == null) return null;
+                var purchase = await _dataContext.Purchases.FindAsync(request.Id);
+                if (purchase == null) return null; // maybe return Failure
 
                 _mapper.Map(request.Purchase, purchase);
                 var res = await _dataContext.SaveChangesAsync() > 0;

@@ -1,4 +1,5 @@
-﻿using Application.Purchases;
+﻿using Application.DTOs;
+using Application.Purchases;
 using Domain;
 
 
@@ -24,16 +25,16 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(Purchase purchase)
+        public async Task<IActionResult> Create(PurchaseWriteDto purchase)
         {
             return HandleResult(await Mediator.Send(new Create.Command { Purchase = purchase }));
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(Guid id,[FromBody] Purchase purchase)
+        public async Task<IActionResult> Update(Guid id,[FromBody] PurchaseWriteDto purchase)
         {
-            purchase.Id = id;
-            return HandleResult(await Mediator.Send(new Edit.Command { Purchase = purchase}));
+           
+            return HandleResult(await Mediator.Send(new Edit.Command {Id = id, Purchase = purchase}));
         }
 
         [HttpDelete("{id}")]

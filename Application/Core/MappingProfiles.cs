@@ -1,4 +1,6 @@
 ﻿
+using Application.DTOs;
+
 using AutoMapper;
 
 using Domain;
@@ -20,12 +22,12 @@ namespace Application.Core
             CreateMap<Transfer, Transfer>();
 
             //DTOz
-            //CreateMap<Transfer, TransferWriteDto>().ReverseMap();
-            //CreateMap<>().ReverseMap();
-            //CreateMap<>().ReverseMap();
-            //CreateMap<>().ReverseMap();
-            //CreateMap<>().ReverseMap();
-            //CreateMap<>().ReverseMap();
+            CreateMap<Transfer, TransferWriteDto>().ReverseMap();
+            CreateMap<Transfer, TransferReadDto>().ReverseMap();
+            CreateMap<Purchase, PurchaseWriteDto>().ReverseMap();
+            CreateMap<Purchase, PurchaseReadDto>().ReverseMap();
+            CreateMap<AppUser, AppRegisterDto>().ReverseMap();
+            //CreateMap<AppUser, >().ReverseMap();
         }
     }
 }

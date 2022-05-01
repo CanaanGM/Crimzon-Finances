@@ -1,4 +1,6 @@
-﻿using Domain;
+﻿using Application.DTOs;
+
+using Domain;
 
 using FluentValidation;
 
@@ -10,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Application.Purchases
 {
-    public class PurchaseValidator : AbstractValidator<Purchase>
+    public class PurchaseValidator : AbstractValidator<PurchaseWriteDto>
     {
         public PurchaseValidator()
         {

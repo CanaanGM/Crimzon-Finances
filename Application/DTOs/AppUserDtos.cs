@@ -1,8 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿
+using System.ComponentModel.DataAnnotations;
 
-namespace API.DTOs
+namespace Application.DTOs
 {
-    public class AppLoginDto 
+    public class AppLoginDto
     {
 
         public string Email { get; set; }
