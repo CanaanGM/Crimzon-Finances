@@ -21,10 +21,7 @@ namespace Domain
         public string Description { get; set; }
         public string PaymentMethod { get; set; }
         public string Reccuring { get; set; }
-        public ICollection<Photo> Invoice { get; set; } = new List<Photo>();
-
-        [NotMapped]
-        public IFormFileCollection Files { get; set; } 
+        public List<Photo> Invoice { get; set; } = new List<Photo>();
         public string UserId { get; set; }
         public AppUser User { get; set; }
 

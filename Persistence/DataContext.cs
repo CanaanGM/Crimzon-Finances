@@ -17,6 +17,7 @@ namespace Persistence
 
         public DbSet<Purchase> Purchases { get; set; }
         public DbSet<Transfer> Transfers { get; set; }
+        public DbSet<Photo> Photos { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -36,11 +37,11 @@ namespace Persistence
                 .OnDelete(DeleteBehavior.Cascade)
                 ;
 
-            //builder.Entity<Purchase>()
-            //    .HasMany(a => a.Invoice)
-            //    .WithOne(q => q.Purchase)
-            //    .HasForeignKey(w => w.PurchaseId)
-            //    .OnDelete(DeleteBehavior.Cascade);
+            builder.Entity<Purchase>()
+                .HasMany(a => a.Invoice)
+                .WithOne(q => q.Purchase)
+                .HasForeignKey(w => w.PurchaseId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
 
     }

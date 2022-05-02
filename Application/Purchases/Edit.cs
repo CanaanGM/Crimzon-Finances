@@ -4,6 +4,8 @@ using Application.Interfaces;
 
 using AutoMapper;
 
+using Domain;
+
 using FluentValidation;
 
 using MediatR;
@@ -12,6 +14,8 @@ using Microsoft.EntityFrameworkCore;
 
 using Persistence;
 
+using System.IO;
+
 namespace Application.Purchases
 {
     public class Edit
@@ -19,7 +23,7 @@ namespace Application.Purchases
         public class Command : IRequest<Result<Unit>>
         {
             public Guid Id { get; set; }
-            public PurchaseWriteDto Purchase { get; set; }
+            public PurchaseUpdateDto Purchase { get; set; }
         }
 
         public class CommandValidator : AbstractValidator<Command>
@@ -27,7 +31,7 @@ namespace Application.Purchases
             public CommandValidator()
             {
                 RuleFor(c => c.Id).NotEmpty();
-                RuleFor(x => x.Purchase).SetValidator(new PurchaseValidator());
+                RuleFor(x => x.Purchase).SetValidator(new PurchaseUpdateValidator());
             }
         }
 
@@ -48,10 +52,13 @@ namespace Application.Purchases
             {
                 var purchase = await _dataContext.Purchases.FindAsync(request.Id);
                 var user = await _dataContext.Users.FirstOrDefaultAsync(x =>
-            x.Id == _userAccessor.GetUserId());
+                                 x.Id == _userAccessor.GetUserId());
 
                 if (user == null || purchase == null || purchase.UserId != user.Id) 
                         return Result<Unit>.Failure("Failed to edit purchase");
+
+                if (request.Purchase.Files != null)
+                    await UpdatePhotos(request.Purchase, purchase);
 
                 _mapper.Map(request.Purchase, purchase);
                 var res = await _dataContext.SaveChangesAsync() > 0;
@@ -59,6 +66,37 @@ namespace Application.Purchases
                           ? Result<Unit>.Failure("Failed to edit purchase")
                           : Result<Unit>.Success(Unit.Value);
             }
+
+            private async Task UpdatePhotos(PurchaseUpdateDto purchasedto, Purchase purchase)
+            {   //! replaces the old pics with the new ones
+                purchase.Invoice.Clear();
+
+                foreach (var file in purchasedto.Files)
+                {
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        await file.CopyToAsync(memoryStream);
+                        var newInvoice = new Photo()
+                        {
+                            Name = file.FileName,
+                            Description = $"{purchase.Name} Invoice",
+                            FileExtension = file.ContentType,
+                            Size = memoryStream.Length,
+                            Bytes = memoryStream.ToArray(),
+                            Purchase = purchase,
+                            PurchaseId = purchase.Id,
+                        };
+
+                        _dataContext.Photos.Add(newInvoice);
+
+                        purchase.Invoice.Add(newInvoice);
+                    }
+                }
+            }
         }
+
+
+
+
     }
 }

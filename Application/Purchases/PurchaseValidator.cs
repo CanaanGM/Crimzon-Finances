@@ -28,4 +28,22 @@ namespace Application.Purchases
             RuleFor(x => x.Reccuring).NotEmpty();
         }
     }
+
+    public class PurchaseUpdateValidator : AbstractValidator<PurchaseUpdateDto>
+    {
+        public PurchaseUpdateValidator()
+        {
+            //! Price in $ isn't manditory and so is the invoice
+
+            RuleFor(x => x.Name).NotEmpty();
+            RuleFor(x => x.Seller).NotEmpty();
+            RuleFor(x => x.PurchaseDate).NotEmpty();
+            RuleFor(x => x.Category).NotEmpty();
+            RuleFor(x => x.Price).NotEmpty();
+            RuleFor(x => x.Description).NotEmpty();
+            RuleFor(x => x.PaymentMethod).NotEmpty();
+            RuleFor(x => x.Reccuring).NotEmpty();
+            RuleFor(x => x.Files).NotEmpty();
+        }
+    }
 }

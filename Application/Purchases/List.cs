@@ -3,6 +3,7 @@ using Application.DTOs;
 using Application.Interfaces;
 
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 
 using MediatR;
 
@@ -35,8 +36,11 @@ namespace Application.Purchases
                 var user = await _context.Users.FirstOrDefaultAsync(x =>
                             x.Id == _userAccessor.GetUserId());
                 if (user == null ) return Result<List<PurchaseReadDto>>.Failure("bitch");
-                var purchases =_mapper.Map<List<PurchaseReadDto>>(
-                    await _context.Purchases.Where(x=>x.UserId == user.Id).ToListAsync());
+               
+                var purchases = await _context.Purchases
+                    .Where(x=>x.UserId == user.Id)
+                    .ProjectTo<PurchaseReadDto>(_mapper.ConfigurationProvider)
+                    .ToListAsync();
 
                 return purchases == null
                     ? Result<List<PurchaseReadDto>>.Failure("Failed to get purchases")

@@ -3,6 +3,7 @@ using Application.DTOs;
 using Application.Interfaces;
 
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 
 using Domain;
 
@@ -44,13 +45,16 @@ namespace Application.Purchases
                 var user = await _dataContext.Users.FirstOrDefaultAsync(x =>
                      x.Id == _userAccessor.GetUserId());
 
-                var purchase = await _dataContext.Purchases.FindAsync(request.Id);
+                var purchase = await _dataContext.Purchases
+                    .FindAsync(request.Id);
                 if (user == null || purchase == null || purchase.UserId != user.Id) return Result<PurchaseReadDto>.Failure("bitch");
 
+                var purchase2Return = await _dataContext.Purchases
+                    .ProjectTo<PurchaseReadDto>(_mapper.ConfigurationProvider)
+                    .FirstOrDefaultAsync(x => x.Id == request.Id);
+
                 if (purchase.UserId == user.Id)
-                return Result<PurchaseReadDto>.Success(
-                    _mapper.Map< PurchaseReadDto>(purchase)
-                    );
+                return Result<PurchaseReadDto>.Success(purchase2Return);
                 return Result<PurchaseReadDto>.Failure("biatch");
             }
         }

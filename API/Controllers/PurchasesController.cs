@@ -24,14 +24,15 @@ namespace API.Controllers
             return HandleResult(await Mediator.Send(new Details.Query { Id = id }));
         }
 
+
         [HttpPost]
-        public async Task<IActionResult> Create(  PurchaseWriteDto purchase)
+        public async Task<IActionResult> Create([FromForm]PhotoWriteDto photos, [FromForm] PurchaseWriteDto purchase)
         {
-            return HandleResult(await Mediator.Send(new Create.Command { Purchase = purchase }));
+            return HandleResult(await Mediator.Send(new Create.Command { Photos=photos,  Purchase = purchase }));
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(Guid id,[FromBody] PurchaseWriteDto purchase)
+        public async Task<IActionResult> Update(Guid id,[FromForm] PurchaseUpdateDto purchase)
         {
            
             return HandleResult(await Mediator.Send(new Edit.Command {Id = id, Purchase = purchase}));

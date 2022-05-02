@@ -63,7 +63,7 @@ namespace Persistence
                         PurchaseDate = DateTime.UtcNow,
                         Reccuring = "Test",
                         Seller = "Test",
-                        Invoice = "Test",
+                        Invoice = null,
                         UserId = new Guid().ToString(),
                         User = new AppUser{ DisplayName = "Test", Email= "test@test.com", UserName = "test"},
 

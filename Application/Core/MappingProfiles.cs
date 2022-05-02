@@ -25,8 +25,20 @@ namespace Application.Core
             CreateMap<Transfer, TransferWriteDto>().ReverseMap();
             CreateMap<Transfer, TransferReadDto>().ReverseMap();
             CreateMap<Purchase, PurchaseWriteDto>().ReverseMap();
-            CreateMap<Purchase, PurchaseReadDto>().ReverseMap();
+            CreateMap<Purchase, PurchaseReadDto>()
+                .ForMember(e=>e.Invoice,
+                o=>o.MapFrom(e=>e.Invoice))
+                .ReverseMap();
+
+            CreateMap<Purchase, PurchaseUpdateDto>()
+                .ReverseMap();
             CreateMap<AppUser, AppRegisterDto>().ReverseMap();
+            
+            CreateMap<Photo, PhotoReadDto>()
+                .ForMember(c=>c.ImageBase64,e=>e.MapFrom(x=>x.Bytes))
+                .ReverseMap();
+            CreateMap<Photo, PhotoWriteDto>().ReverseMap();
+
             //CreateMap<AppUser, >().ReverseMap();
         }
     }
