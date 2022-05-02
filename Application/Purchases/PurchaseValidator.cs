@@ -43,7 +43,6 @@ namespace Application.Purchases
             RuleFor(x => x.Description).NotEmpty();
             RuleFor(x => x.PaymentMethod).NotEmpty();
             RuleFor(x => x.Reccuring).NotEmpty();
-            RuleFor(x => x.Files).NotEmpty();
         }
     }
 }

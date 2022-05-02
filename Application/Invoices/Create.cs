@@ -14,23 +14,19 @@ using Microsoft.EntityFrameworkCore;
 
 using Persistence;
 
-namespace Application.Purchases
+namespace Application.Invoices
 {
-    public class Edit
+    public class Create
     {
         public class Command : IRequest<Result<Unit>>
         {
-            public Guid Id { get; set; }
-            public PurchaseUpdateDto Purchase { get; set; }
+            public Guid PurchaseId { get; set; }
+            public PhotoWriteDto Invoice { get; set; }
         }
 
         public class CommandValidator : AbstractValidator<Command>
         {
-            public CommandValidator()
-            {
-                RuleFor(c => c.Id).NotEmpty();
-                RuleFor(x => x.Purchase).SetValidator(new PurchaseUpdateValidator());
-            }
+            public CommandValidator() => RuleFor(x => x.Invoice).SetValidator(new InvoiceValidator());
         }
 
         public class Handler : IRequestHandler<Command, Result<Unit>>
@@ -48,32 +44,34 @@ namespace Application.Purchases
 
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
-                var purchase = await _dataContext.Purchases.FindAsync(request.Id);
-                var user = await _dataContext.Users.FirstOrDefaultAsync(x =>
-                                 x.Id == _userAccessor.GetUserId());
+                // get the current user
+                var user = await _dataContext.Users.FirstOrDefaultAsync(x => x.Id == _userAccessor.GetUserId());
+                // get the purchase from id passed in via request
+                var purchase = await _dataContext.Purchases.FirstOrDefaultAsync(x => x.Id == request.PurchaseId);
+                if (user == null || purchase == null || !user.Purchases.Contains(purchase)) return Result<Unit>.Failure("Bitch!");
 
-                if (user == null || purchase == null || purchase.UserId != user.Id)
-                    return Result<Unit>.Failure("Failed to edit purchase");
+                // create (Decode) the photo
+                List<Photo> photos = new();
+                if (request.Invoice != null)
+                    photos.AddRange(await GenerateInvoicesFromRequest(request.Invoice, purchase));
+                // if it doesn't exisits in the purchase.Invoices, create and add it
 
-                if (request.Purchase.Files != null)
-                    await UpdatePhotos(request.Purchase, purchase);
+                purchase.Invoice.AddRange(photos);
+                var result = await _dataContext.SaveChangesAsync() > 0;
 
-                _mapper.Map(request.Purchase, purchase);
-                var res = await _dataContext.SaveChangesAsync() > 0;
-                return !res
-                          ? Result<Unit>.Failure("Failed to edit purchase")
-                          : Result<Unit>.Success(Unit.Value);
+                return !result ? Result<Unit>.Failure("Failed to create Invoice") : Result<Unit>.Success(Unit.Value);
+
             }
 
-            private async Task UpdatePhotos(PurchaseUpdateDto purchasedto, Purchase purchase)
-            {   //! replaces the old pics with the new ones
-                //purchase.Invoice.Clear();
-
-                foreach (var file in purchasedto.Files)
+            private async Task<List<Photo>> GenerateInvoicesFromRequest(PhotoWriteDto invoice, Purchase purchase)
+            {
+                List<Photo> photosList = new List<Photo>();
+                foreach (var file in invoice.Files)
                 {
                     using (var memoryStream = new MemoryStream())
                     {
                         await file.CopyToAsync(memoryStream);
+
                         var newInvoice = new Photo()
                         {
                             Name = file.FileName,
@@ -85,14 +83,16 @@ namespace Application.Purchases
                             PurchaseId = purchase.Id,
                         };
 
-                        if (!purchase.Invoice.Contains(newInvoice))
+                        if (!purchase.Invoice.Contains(newInvoice) || purchase.Invoice.Count == 0)
                         {
                             _dataContext.Photos.Add(newInvoice);
 
-                            purchase.Invoice.Add(newInvoice);
+                            photosList.Add(newInvoice);
                         }
-                    }
+                    };
                 }
+
+                return photosList;
             }
         }
     }

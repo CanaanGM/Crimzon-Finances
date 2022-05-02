@@ -16,11 +16,17 @@ namespace Application.DTOs
         public string Description { get; set; }
         public string FileExtension { get; set; }
         public decimal Size { get; set; }
+        public Guid PurchaseId { get; set; }
     }
 
     public class PhotoWriteDto
     {
         public ICollection<IFormFile> Files { get; set; }
+
+    }
+    public class PhotoUpdateDto
+    {
+        public IFormFile File { get; set; }
 
     }
 }

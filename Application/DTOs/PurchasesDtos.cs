@@ -42,6 +42,6 @@ namespace Application.DTOs
         public string Description { get; set; }
         public string PaymentMethod { get; set; }
         public string Reccuring { get; set; }
-        public ICollection<IFormFile> Files { get; set; }
+        public ICollection<IFormFile>? Files { get; set; }
     }
 }

@@ -38,6 +38,7 @@ namespace Application.Core
                 .ForMember(c=>c.ImageBase64,e=>e.MapFrom(x=>x.Bytes))
                 .ReverseMap();
             CreateMap<Photo, PhotoWriteDto>().ReverseMap();
+            CreateMap<Photo, Photo>().ReverseMap();
 
             //CreateMap<AppUser, >().ReverseMap();
         }
