@@ -4,8 +4,8 @@ API for handling finance related crap per user:
 - Purchases
 - Transfers
 
-##TODO:
-- [] Add Docker and docker-compose for easy deployment and database aceess
+## TODO:
+- [x] Add Docker and docker-compose for easy deployment and database aceess
 ## Architecure
 #### Clean With CQRS cause i like it.
 
