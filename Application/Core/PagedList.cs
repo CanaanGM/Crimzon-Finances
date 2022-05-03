@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace Application.Core
 {
-    public class PagedList<T> : List<T>
+    public class CustomPagedList<T> : List<T>
     {
-        public PagedList(IEnumerable<T> items, int count, int pageNumber, int pageSize)
+        public CustomPagedList(IEnumerable<T> items, int count, int pageNumber, int pageSize)
         {
             CurrentPage = pageNumber;
             TotalPages = (int)Math.Ceiling(count / (double)pageSize);
@@ -24,12 +24,12 @@ namespace Application.Core
         public int PageSize { get; set; }
         public int TotalCount { get; set; }
 
-        public static async Task<PagedList<T>> CreateAsync(IQueryable<T> source, int pageNumber,
+        public static async Task<CustomPagedList<T>> CreateAsync(IQueryable<T> source, int pageNumber,
             int pageSize)
         {
             var count = await source.CountAsync();
             var items = await source.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
-            return new PagedList<T>(items, count, pageNumber, pageSize);
+            return new CustomPagedList<T>(items, count, pageNumber, pageSize);
         }
     }
 }

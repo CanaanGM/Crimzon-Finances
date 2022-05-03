@@ -8,7 +8,7 @@ namespace Application.Core
 {
     public class PagedParams
     {
-        public int MaxPageSize { get; set; } = 50;
+        public int MaxPageSize { get; set; } = 10;
 
         public int PageNumber { get; set; } = 1;
 

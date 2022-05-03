@@ -1,4 +1,5 @@
-﻿using Application.DTOs;
+﻿using Application.Core;
+using Application.DTOs;
 using Application.Transfers;
 
 using Domain;
@@ -11,10 +12,10 @@ namespace API.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] TransferParams pagedParams)
         {
 
-            return HandleResult(await Mediator.Send(new List.Query()));
+            return HandlePagedResult(await Mediator.Send(new List.Query { PagedParams = pagedParams}));
         }
 
         [HttpGet("{id}")]
