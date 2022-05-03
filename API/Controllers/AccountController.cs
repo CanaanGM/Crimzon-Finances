@@ -13,7 +13,7 @@ using System.Security.Claims;
 
 namespace API.Controllers
 {
-    [AllowAnonymous]
+    
     [ApiController]
     [Route("api/[controller]")]
     public class AccountController : ControllerBase
@@ -28,7 +28,7 @@ namespace API.Controllers
             _signInManager = signInManager;
             _token = token;
         }
-
+        [AllowAnonymous]
         [HttpPost("login")]
         public async Task<ActionResult<UserDto>> Login(AppLoginDto loginDto)
         {
@@ -37,11 +37,14 @@ namespace API.Controllers
 
             var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
 
-            return result.Succeeded
-            ? CreateUserObject(user)
-            : Unauthorized();
+            if (result.Succeeded)
+            {
+                await SetRefreshToken(user);
+                return CreateUserObject(user);
+            }
+            return Unauthorized();
         }
-
+        [AllowAnonymous]
         [HttpPost("register")]
         public async Task<ActionResult<UserDto>> Register(AppRegisterDto registerDto)
         {
@@ -58,9 +61,12 @@ namespace API.Controllers
 
             var result = await _userManager.CreateAsync(user, registerDto.Password);
 
-            return result.Succeeded
-            ? CreateUserObject(user)
-            : BadRequest("Problem registering user . . . ");
+            if(result.Succeeded)
+            {
+                await SetRefreshToken(user);
+                return CreateUserObject(user);
+            }
+            return BadRequest("Problem registering user . . . ");
         }
 
         [Authorize]
@@ -68,7 +74,7 @@ namespace API.Controllers
         public async Task<ActionResult<UserDto>> GetCurrentUser()
         {
             var user = await _userManager.FindByEmailAsync(User.FindFirstValue(ClaimTypes.Email));
-
+            await SetRefreshToken(user);
             return CreateUserObject(user);
         }
 
@@ -76,9 +82,42 @@ namespace API.Controllers
         {
             DisplayName = user.DisplayName,
             UserName = user.UserName,
-            Token = _token.CreateToken(user),
-            Image = string.Empty
+            Token = _token.CreateToken(user)
         };
+
+        [Authorize]
+        [HttpPost("refreshToken")]
+        public async Task<ActionResult<UserDto>> RefreshToken()
+        {
+            var refreshToken = Request.Cookies["refreshToken"];
+            var user = await _userManager.Users
+                .Include(r => r.RefreshTokens)
+                .FirstOrDefaultAsync(x => x.UserName == User.FindFirstValue(ClaimTypes.Name));
+
+            if (user == null) return Unauthorized();
+
+            var oldToken = user.RefreshTokens.SingleOrDefault(x=>x.Token == refreshToken);
+            if (oldToken != null && !oldToken.IsActive) return Unauthorized();
+            return CreateUserObject(user);
+
+        }
+
+        private async Task SetRefreshToken(AppUser appUser)
+        {
+            var refreshToken = _token.GenerateRefreshToken();
+
+            appUser.RefreshTokens.Add(refreshToken);
+            await _userManager.UpdateAsync(appUser);
+
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Expires = DateTimeOffset.UtcNow.AddDays(7),
+            };
+
+            Response.Cookies.Append("refreshToken", refreshToken.Token, cookieOptions);
+        }
+
 
     }
 }

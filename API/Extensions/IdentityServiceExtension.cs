@@ -35,6 +35,8 @@ namespace API.Extensions
                         IssuerSigningKey = key,
                         ValidateIssuer = false,
                         ValidateAudience = false,
+                        ValidateLifetime = true,
+                        ClockSkew = TimeSpan.Zero
                     };
                 });
             services.AddScoped<TokenService>();
