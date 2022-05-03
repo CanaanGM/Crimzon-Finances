@@ -50,6 +50,8 @@ API for handling finance related crap
  5. FluentValidation.AspNetCore
  6. Microsoft.AspNetCore.Identity.EntityFrameworkCore 
  7. Microsoft.AspNetCore.Authentication.JwtBearer
+ 8. X.PagedList - not used
+ 9. NWebsec.AspNetCore.Middleware - security 
 
 ### Commands
 #### Migrations
