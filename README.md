@@ -5,7 +5,7 @@ API for handling finance related crap per user:
 - Transfers
 
 ## TODO:
-- [x] Add Docker and docker-compose for easy deployment and database aceess
+- [ ] Add Docker and docker-compose for easy deployment and database aceess
 ## Architecure
 #### Clean With CQRS cause i like it.
 
