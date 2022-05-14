@@ -1,14 +1,17 @@
 # Crimzon Finances
+Meant to be self hosted for now. images(invoices) are saved in SQLServer so maybe needs to change if cloud is ever used ??
+API for handling finance related crap per user: 
+- Purchases
+- Transfers
 
-API for handling finance related crap
+API for handling finance related crap 
 
-TODO:
- 1. Add Folders ; the ability to sort (transactions and purchases) into them.
- 1. Add Transaction ID to both purchase and transaction models.
- 1. 
-
-
+## TODO:
+- [x] Add Docker and docker-compose for easy deployment and database aceess
+- [ ] Add Folders ; the ability to sort (transactions and purchases) into them.
+- [x] Add Transaction ID to both purchase and transaction models.
 ## Architecure
+#### Clean With CQRS cause i like it.
 
   Domain depends on nought
   Application depends on Domain
