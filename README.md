@@ -10,6 +10,7 @@ API for handling finance related crap
 - [x] Add Docker and docker-compose for easy deployment and database aceess
 - [ ] Add Folders ; the ability to sort (transactions and purchases) into them.
 - [x] Add Transaction ID to both purchase and transaction models.
+- [ ] Tidy up this sad mess of a README file xD
 ## Architecure
 #### Clean With CQRS cause i like it.
 
