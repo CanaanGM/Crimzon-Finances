@@ -2,6 +2,11 @@
 
 API for handling finance related crap
 
+TODO:
+ 1. Add Folders ; the ability to sort (transactions and purchases) into them.
+ 1. Add Transaction ID to both purchase and transaction models.
+ 1. 
+
 
 ## Architecure
 
