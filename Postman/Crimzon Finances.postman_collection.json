@@ -1,0 +1,634 @@
+{
+	"info": {
+		"_postman_id": "66c9c476-96ef-46e5-a882-dc9bbb5a644c",
+		"name": "Crimzon Finances",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Invoices",
+			"item": [
+				{
+					"name": "Get All for Purchase",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/Invoice/4DB313EA-24C5-4E7B-673E-08DA2BE2E681",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Invoice",
+								"4DB313EA-24C5-4E7B-673E-08DA2BE2E681"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create For Purchase",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "{{url}}/Invoice/4DB313EA-24C5-4E7B-673E-08DA2BE2E681",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Invoice",
+								"4DB313EA-24C5-4E7B-673E-08DA2BE2E681"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit for Purchase",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/Invoice/4DB313EA-24C5-4E7B-673E-08DA2BE2E681",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Invoice",
+								"4DB313EA-24C5-4E7B-673E-08DA2BE2E681"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete invoice from Purchase",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "invoiceid",
+									"value": "",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/Invoice/4DB313EA-24C5-4E7B-673E-08DA2BE2E681",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Invoice",
+								"4DB313EA-24C5-4E7B-673E-08DA2BE2E681"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Purchases",
+			"item": [
+				{
+					"name": "GetAll",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{canaanToken}}",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{url}}/Purchases",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Purchases"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetAll with date range",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{canaanToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/Purchases?startDate=2022-04-23&endDate=2022-04-24",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Purchases"
+							],
+							"query": [
+								{
+									"key": "startDate",
+									"value": "2022-04-23"
+								},
+								{
+									"key": "endDate",
+									"value": "2022-04-24"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Purchase",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var moment = require(\"moment\");\r",
+									"\r",
+									"pm.environment.set('purchaseDate', moment().add(0, 'days').toISOString());"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Test11\",\r\n  \"seller\": \"Test\",\r\n  \"purchaseDate\": \"{{purchaseDate}}\",\r\n  \"category\": \"Test\",\r\n  \"price\": 10,\r\n  \"priceInDollar\": 0,\r\n  \"description\": \"Test\",\r\n  \"paymentMethod\": \"Test\",\r\n  \"reccuring\": \"Test\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/Purchases",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Purchases"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get by GUID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/Purchases/5b7c9ecd-d4bb-45e2-dae2-08da2a3f0f05",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Purchases",
+								"5b7c9ecd-d4bb-45e2-dae2-08da2a3f0f05"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit by GUID",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Test\",\r\n  \"seller\": \"Test\",\r\n  \"purchaseDate\": \"2022-04-28T03:26:43.085254\",\r\n  \"category\": \"Test\",\r\n  \"price\": 10,\r\n  \"priceInDollar\": 0,\r\n  \"description\": \"Test\",\r\n  \"paymentMethod\": \"Test\",\r\n  \"reccuring\": \"Test\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/Purchases/a47cf11c-bf94-4231-26b7-08da28c6ea9e",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Purchases",
+								"a47cf11c-bf94-4231-26b7-08da28c6ea9e"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete by GUID",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/Purchases/a47cf11c-bf94-4231-26b7-08da28c6ea9e",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Purchases",
+								"a47cf11c-bf94-4231-26b7-08da28c6ea9e"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Transfers",
+			"item": [
+				{
+					"name": "Get ALL",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/Transfer",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Transfer"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Transfer",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Transfer\",\r\n  \"amount\": 10,\r\n  \"description\": \"Transfer\",\r\n  \"dateWasMade\": \"2022-04-28T03:57:16.393Z\",\r\n  \"fromBank\": \"Transfer\",\r\n  \"fromAccount\": \"Transfer\",\r\n  \"reciever\": \"Transfer\",\r\n  \"transferType\": \"Transfer\",\r\n  \"RecieverAccount\":\"test\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/Transfer",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Transfer"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get By Guid",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/Transfer/43643aa8-f542-4e36-e973-08da28cb4e03",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Transfer",
+								"43643aa8-f542-4e36-e973-08da28cb4e03"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit by Guid",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"string\",\r\n  \"amount\": 0,\r\n  \"description\": \"string\",\r\n  \"dateWasMade\": \"2022-04-28T03:59:32.657Z\",\r\n  \"fromBank\": \"string\",\r\n  \"fromAccount\": \"string\",\r\n  \"reciever\": \"string\",\r\n  \"transferType\": \"string\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/Transfer/43643aa8-f542-4e36-e973-08da28cb4e03",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Transfer",
+								"43643aa8-f542-4e36-e973-08da28cb4e03"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete by Guid",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/Transfer/43643aa8-f542-4e36-e973-08da28cb4e03",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Transfer",
+								"43643aa8-f542-4e36-e973-08da28cb4e03"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Account",
+			"item": [
+				{
+					"name": "LogIn - Dante",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const user = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Has properties\", function () {\r",
+									"    pm.expect(user).to.have.property('displayName');\r",
+									"    pm.expect(user).to.have.property('username');\r",
+									"    pm.expect(user).to.have.property('image');\r",
+									"    pm.expect(user).to.have.property('token');\r",
+									"});\r",
+									"\r",
+									"if (pm.test(\"Has properties\")) {\r",
+									"    pm.globals.set('danteToken', user.token);\r",
+									"}\r",
+									"\r",
+									"pm.test(\"Global token has been set\", function() {\r",
+									"    var token = pm.globals.get('danteToken');\r",
+									"    pm.expect(token).to.eql(user.token);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\":\"dante@test.com\",\r\n    \"password\":\"Pa$$w0rd!\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/account/login",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"account",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "LogIn - Canaan",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const user = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Has properties\", function () {\r",
+									"    pm.expect(user).to.have.property('displayName');\r",
+									"    pm.expect(user).to.have.property('username');\r",
+									"    pm.expect(user).to.have.property('image');\r",
+									"    pm.expect(user).to.have.property('token');\r",
+									"});\r",
+									"\r",
+									"if (pm.test(\"Has properties\")) {\r",
+									"    pm.globals.set('canaanToken', user.token);\r",
+									"}\r",
+									"\r",
+									"pm.test(\"Global token has been set\", function() {\r",
+									"    var token = pm.globals.get('canaanToken');\r",
+									"    pm.expect(token).to.eql(user.token);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\":\"canaan@test.com\",\r\n    \"password\":\"Pa$$w0rd!\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/account/login",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"account",
+								"login"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login - Alphrad",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\":\"alphrad2@test.com\",\r\n    \"password\":\"Pa$$w0rd\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/account/login",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"account",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"email\": \"alphrad2@test.com\",\r\n\t\"username\": \"alphrad\",\r\n\t\"displayName\": \"Alphrad\",\r\n\t\"password\": \"Pa$$w0rd\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/account/register",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"account",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Refresh Token",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/account/refreshToken",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"account",
+								"refreshToken"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Current User",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/account/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"account",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{danteToken}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "url",
+			"value": "https://localhost:7027",
+			"type": "string"
+		},
+		{
+			"key": "canaan_token",
+			"value": "",
+			"type": "string",
+			"disabled": true
+		}
+	]
+}

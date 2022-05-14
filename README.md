@@ -4,8 +4,12 @@ API for handling finance related crap per user:
 - Purchases
 - Transfers
 
+API for handling finance related crap 
+
 ## TODO:
-- [ ] Add Docker and docker-compose for easy deployment and database aceess
+- [x] Add Docker and docker-compose for easy deployment and database aceess
+- [ ] Add Folders ; the ability to sort (transactions and purchases) into them.
+- [x] Add Transaction ID to both purchase and transaction models.
 ## Architecure
 #### Clean With CQRS cause i like it.
 
