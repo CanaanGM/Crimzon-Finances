@@ -16,7 +16,7 @@ namespace Domain
 
         public ICollection<Purchase> Purchases { get; set; } = new List<Purchase>();
         public ICollection<Transfer> Transfers { get; set; } = new List<Transfer>();
-
+        public ICollection<Dept> Depts { get; set; } = new List<Dept>();
         public ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
     }
 }

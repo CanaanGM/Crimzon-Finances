@@ -18,6 +18,10 @@ namespace Persistence
         public DbSet<Purchase> Purchases { get; set; }
         public DbSet<Transfer> Transfers { get; set; }
         public DbSet<Photo> Photos { get; set; }
+        public DbSet<Folder> Folders { get; set; }
+        public DbSet<Dept> Depts { get; set; }
+        public DbSet<Payment> Payments { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
