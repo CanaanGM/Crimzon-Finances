@@ -12,6 +12,7 @@ namespace Domain
     public class Purchase
     {
         public Guid Id { get; set; }
+        public string? TransactionId { get; set; }
         public string Name { get; set; }
         public string Seller { get; set; }
         public DateTime PurchaseDate { get; set; }
@@ -25,6 +26,9 @@ namespace Domain
         public string UserId { get; set; }
         public AppUser User { get; set; }
 
+
+        public Guid FolderId { get; set; }
+        public Folder Folder { get; set; }
 
 
     }

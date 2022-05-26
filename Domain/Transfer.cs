@@ -9,6 +9,7 @@ namespace Domain
     public class Transfer
     {
         public Guid Id { get; set; }
+        public string? TransactionId { get; set; }
         public string Name { get; set; }
         public double Amount { get; set; }
         public string Description { get; set; }
@@ -21,5 +22,8 @@ namespace Domain
 
         public string UserId { get; set; }
         public AppUser User { get; set; }
+
+        public Guid FolderId { get; set; }
+        public Folder Folder { get; set; }
     }
 }
