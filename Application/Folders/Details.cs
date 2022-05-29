@@ -5,6 +5,8 @@ using Application.Interfaces;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 
+using Domain;
+
 using FluentValidation;
 
 using MediatR;
@@ -19,15 +21,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.Depts
+namespace Application.Folders
 {
     public class Details
     {
-        public class Query : IRequest<Result<DeptReadDto>>
+        public class Query : IRequest<Result<FolderReadDto>>
         {
             public Guid Id { get; set; }
         }
-        public class QueryValidator : AbstractValidator<Query>
+
+        public class QueryValidator: AbstractValidator<Query>
         {
             public QueryValidator()
             {
@@ -35,7 +38,7 @@ namespace Application.Depts
             }
         }
 
-        public class Handler : IRequestHandler<Query, Result<DeptReadDto>>
+        public class Handler : IRequestHandler<Query, Result<FolderReadDto>>
         {
             private readonly DataContext _dataContext;
             private readonly IMapper _mapper;
@@ -45,21 +48,22 @@ namespace Application.Depts
                 _dataContext = dataContext;
                 _mapper = mapper;
                 _userAccessor = userAccessor;
+
             }
-            public async Task<Result<DeptReadDto>> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<Result<FolderReadDto>> Handle(Query request, CancellationToken cancellationToken)
             {
                 var user = await _dataContext.Users.FirstOrDefaultAsync(
                     x => x.Id == _userAccessor.GetUserId());
 
-                var dept = await _dataContext.Depts.FindAsync(request.Id);
+                var folder = await _dataContext.Folders.FindAsync(request.Id);
 
-                var dept2return = await _dataContext.Depts
-                    .ProjectTo<DeptReadDto>(_mapper.ConfigurationProvider)
-                    .FirstOrDefaultAsync(x => x.Id == request.Id);
+                var folder2return = await _dataContext.Folders
+                    .ProjectTo<FolderReadDto>(_mapper.ConfigurationProvider)
+                    .FirstOrDefaultAsync(x=>x.Id == request.Id);
 
-                return dept.UserId == user.Id
-                    ? Result<DeptReadDto>.Success(dept2return)
-                    : Result<DeptReadDto>.Failure("Biatch");
+                return folder.UserId == user.Id
+                    ? Result<FolderReadDto>.Success(folder2return)
+                    : Result<FolderReadDto>.Failure("Biatch");
             }
         }
     }

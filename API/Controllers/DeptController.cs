@@ -29,10 +29,11 @@ namespace API.Controllers
 
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(Guid Id, [FromBody] DeptWriteDto dept)
-            => HandleResult(await Mediator.Send(new Edit.Command { Id = Id, Dept = dept}));
+            => HandleResult(await Mediator.Send(new Edit.Command { Id = Id, Dept = dept }));
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id)
          => HandleResult(await Mediator.Send(new Delete.Command { Id = id }));
+    }
         
 }

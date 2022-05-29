@@ -20,20 +20,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.Depts
+namespace Application.Folders
 {
     public class Create
     {
         public class Command : IRequest<Result<Unit>>
         {
-            public DeptWriteDto Dept { get; set; }
+            public FolderWriteDto Folder { get; set; }
         }
 
         public class CommandValidator : AbstractValidator<Command>
         {
             public CommandValidator()
             {
-               RuleFor(x => x.Dept).SetValidator(new DeptValidator()); 
+                RuleFor(x => x.Folder).SetValidator(new FolderValidator());
             }
         }
 
@@ -41,37 +41,30 @@ namespace Application.Depts
         {
             private readonly DataContext _dataContext;
             private readonly IUserAccessor _userAccessor;
-
             public Handler(DataContext dataContext, IUserAccessor userAccessor)
             {
                 _dataContext = dataContext;
                 _userAccessor = userAccessor;
-            }
 
+            }
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
                 var user = await _dataContext.Users.FirstOrDefaultAsync(x => x.UserName == _userAccessor.GetUsername());
-                if (user == null) return Result<Unit>.Failure("Failes to create Dept . . .");
-
-                var dept = new Dept 
-                    {
-                        Name = request.Dept.Name,
-                        Amount = request.Dept.Amount,
-                        AmountRemaining = request.Dept.AmountRemaining,
-                        DateMade = request.Dept.DateMade,
-                        PaidOff = request.Dept.PaidOff,
-                        Deptor = request.Dept.Deptor,
-                        UserId = user.Id,
-                        User = user
-                    };
+                if (user == null) return Result<Unit>.Failure("Failes to create Folder . . .");
 
 
-                user.Depts.Add(dept);
-                _dataContext.Depts.Add(dept);
+                var folder = new Folder {
+                    Name = request.Folder.Name,
+                    UserId = user.Id,
+                    User = user
+                };
+
+                user.Folders.Add(folder);
+                _dataContext.Folders.Add(folder);
 
                 var result = await _dataContext.SaveChangesAsync() > 0;
                 return !result
-                    ? Result<Unit>.Failure("Failed to create dept")
+                    ? Result<Unit>.Failure("Failed to create folder")
                     : Result<Unit>.Success(Unit.Value);
 
             }
