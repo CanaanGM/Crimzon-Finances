@@ -4,20 +4,25 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain
+namespace Application.DTOs
 {
-    public class Payment
+    public class PaymentReadDto
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
         public double Amount { get; set; }
         public DateTime DateMade { get; set; }
 
-        public Guid DeptId { get; set; }
-        public Dept Dept { get; set; }
+        public DeptReadDto Dept { get; set; }
 
-        public string UserId { get; set; }
-        public AppUser User { get; set; }
+
+    }
+
+    public class PaymentWriteDto
+    {
+        public string Name { get; set; }
+        public double Amount { get; set; }
+        public DateTime DateMade { get; set; }
 
 
     }

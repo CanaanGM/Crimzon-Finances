@@ -13,7 +13,7 @@ namespace Domain
         public double Amount { get; set; }
         public double AmountRemaining { get; set; }
         public DateTime DateMade { get; set; }
-        public DateTime DatePaidOff { get; set; }
+        public DateTime? DatePaidOff { get; set; }
         public bool PaidOff { get; set; }
         public string Deptor { get; set; }
         public string UserId { get; set; }

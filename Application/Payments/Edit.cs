@@ -1,4 +1,5 @@
 ﻿using Application.Core;
+using Application.DTOs;
 using Application.Interfaces;
 
 using AutoMapper;
@@ -17,22 +18,22 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.Invoices
+namespace Application.Payments
 {
-    public class Delete
+    public class Edit
     {
         public class Command : IRequest<Result<Unit>>
         {
-            public Guid PurchaseId { get; set; }
-            public Guid InvoiceId { get; set; }
+            public Guid DeptId { get; set; }
+            public Guid PaymentId { get; set; }
+            public PaymentWriteDto Pyament { get; set; }
         }
-
         public class CommandValidator : AbstractValidator<Command>
         {
             public CommandValidator()
             {
-                RuleFor(c => c.PurchaseId).NotEmpty();
-                RuleFor(c => c.InvoiceId).NotEmpty();
+                RuleFor(a => a.DeptId).NotEmpty();
+                RuleFor(e => e.PaymentId).NotEmpty();
             }
         }
 
@@ -40,28 +41,31 @@ namespace Application.Invoices
         public class Handler : IRequestHandler<Command, Result<Unit>>
         {
             private readonly DataContext _dataContext;
+            private readonly IMapper _mapper;
             private readonly IUserAccessor _userAccessor;
 
-            public Handler(DataContext dataContext, IUserAccessor userAccessor)
+            public Handler(DataContext dataContext, IMapper mapper, IUserAccessor userAccessor)
             {
                 _dataContext = dataContext;
+                _mapper = mapper;
                 _userAccessor = userAccessor;
             }
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
-                var user = await _dataContext.Users.FirstOrDefaultAsync(x => x.Id == _userAccessor.GetUserId());
-                var purchase = await _dataContext.Purchases.FirstOrDefaultAsync(p => p.Id == request.PurchaseId);
-                var invoice = await _dataContext.Photos.FirstOrDefaultAsync(p => p.Id == request.InvoiceId);
+                var user = await _dataContext.Users.FirstOrDefaultAsync(
+                    x => x.Id == _userAccessor.GetUserId());
+                var dept = await _dataContext.Depts.FindAsync(request.DeptId);
+                var payment = await _dataContext.Payments.FindAsync(request.PaymentId);
 
-                if (user == null || purchase == null || !user.Purchases.Contains(purchase) || !purchase.Invoice.Contains(invoice))
+                if (user == null || payment == null || !user.Depts.Contains(dept) && !dept.Payments.Contains(payment))
                     return Result<Unit>.Failure("Bitch!");
 
-                _dataContext.Photos.Remove(invoice);
+                _mapper.Map(request.Pyament, payment);
+
                 var res = await _dataContext.SaveChangesAsync() > 0;
                 return !res
-                      ? Result<Unit>.Failure("Failed to Delete invoice")
+                      ? Result<Unit>.Failure("Failed to Edit payment")
                       : Result<Unit>.Success(Unit.Value);
-
 
             }
         }
