@@ -40,6 +40,10 @@ namespace Application.Core
             CreateMap<Photo, PhotoWriteDto>().ReverseMap();
             CreateMap<Photo, Photo>().ReverseMap();
 
+
+            CreateMap<Dept, DeptReadDto>().ReverseMap();
+            CreateMap<Dept, DeptWriteDto>().ReverseMap();
+
             //CreateMap<AppUser, >().ReverseMap();
         }
     }
