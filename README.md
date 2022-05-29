@@ -11,6 +11,8 @@ API for handling finance related crap
 - [x] Add Folders ; the ability to sort (transactions and purchases) into them.
 - [x] Add loans/depts entity
 - [x] Add Transaction ID to both purchase and transaction models.
+- [ ] add year DTO
+- [ ] add month DTO
 - [ ] Tidy up this sad mess of a README file xD
 ## Architecure
 #### Clean With CQRS cause i like it.
