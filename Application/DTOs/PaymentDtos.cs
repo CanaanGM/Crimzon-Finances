@@ -14,7 +14,6 @@ namespace Application.DTOs
         public DateTime DateMade { get; set; }
 
         public DeptReadDto Dept { get; set; }
-        public UserDto User { get; set; }
 
 
     }

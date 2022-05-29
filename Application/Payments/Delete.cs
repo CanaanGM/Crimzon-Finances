@@ -1,7 +1,8 @@
 ﻿using Application.Core;
+using Application.DTOs;
 using Application.Interfaces;
 
-using AutoMapper;
+using Domain;
 
 using FluentValidation;
 
@@ -17,25 +18,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.Invoices
+namespace Application.Payments
 {
     public class Delete
     {
         public class Command : IRequest<Result<Unit>>
         {
-            public Guid PurchaseId { get; set; }
-            public Guid InvoiceId { get; set; }
+            public Guid DeptId { get; set; }
+            public Guid PaymentId { get; set; }
         }
-
         public class CommandValidator : AbstractValidator<Command>
         {
             public CommandValidator()
             {
-                RuleFor(c => c.PurchaseId).NotEmpty();
-                RuleFor(c => c.InvoiceId).NotEmpty();
+                RuleFor(a => a.DeptId).NotEmpty();
+                RuleFor(e => e.PaymentId).NotEmpty();
             }
         }
-
 
         public class Handler : IRequestHandler<Command, Result<Unit>>
         {
@@ -49,21 +48,24 @@ namespace Application.Invoices
             }
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
-                var user = await _dataContext.Users.FirstOrDefaultAsync(x => x.Id == _userAccessor.GetUserId());
-                var purchase = await _dataContext.Purchases.FirstOrDefaultAsync(p => p.Id == request.PurchaseId);
-                var invoice = await _dataContext.Photos.FirstOrDefaultAsync(p => p.Id == request.InvoiceId);
+                var user = await _dataContext.Users.FirstOrDefaultAsync(
+                    x => x.Id == _userAccessor.GetUserId());
+                var payment = await _dataContext.Payments.FindAsync(request.PaymentId);
+                var dept = await _dataContext.Depts.FindAsync(request.DeptId);
 
-                if (user == null || purchase == null || !user.Purchases.Contains(purchase) || !purchase.Invoice.Contains(invoice))
+                if (user == null || payment == null || !user.Depts.Contains(dept) && !dept.Payments.Contains(payment))
                     return Result<Unit>.Failure("Bitch!");
 
-                _dataContext.Photos.Remove(invoice);
+                _dataContext.Payments.Remove(payment);
+
                 var res = await _dataContext.SaveChangesAsync() > 0;
                 return !res
-                      ? Result<Unit>.Failure("Failed to Delete invoice")
+                      ? Result<Unit>.Failure("Failed to Delete payment")
                       : Result<Unit>.Success(Unit.Value);
-
 
             }
         }
     }
+
+
 }

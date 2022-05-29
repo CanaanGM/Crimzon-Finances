@@ -26,19 +26,21 @@ namespace Application.Invoices
 
         public class CommandValidator : AbstractValidator<Command>
         {
-            public CommandValidator() => RuleFor(x => x.Invoice).SetValidator(new InvoiceValidator());
+            public CommandValidator()
+            {
+                RuleFor(x => x.PurchaseId).NotEmpty();
+                RuleFor(x => x.Invoice).SetValidator(new InvoiceValidator());
+            }
         }
 
         public class Handler : IRequestHandler<Command, Result<Unit>>
         {
             private readonly DataContext _dataContext;
-            private readonly IMapper _mapper;
             private readonly IUserAccessor _userAccessor;
 
-            public Handler(DataContext dataContext, IMapper mapper, IUserAccessor userAccessor)
+            public Handler(DataContext dataContext, IUserAccessor userAccessor)
             {
                 _dataContext = dataContext;
-                _mapper = mapper;
                 _userAccessor = userAccessor;
             }
 
