@@ -1,5 +1,6 @@
 ﻿using Application.Core;
 using Application.DTOs;
+using Application.Errors;
 using Application.Interfaces;
 
 using AutoMapper;
@@ -18,6 +19,7 @@ using Persistence;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -56,6 +58,8 @@ namespace Application.Folders
                     x => x.Id == _userAccessor.GetUserId());
 
                 var folder = await _dataContext.Folders.FindAsync(request.Id);
+                if (folder == null)
+                    throw new RestException(HttpStatusCode.NotFound, new { Folder = "Not Found" });
 
                 var folder2return = await _dataContext.Folders
                     .ProjectTo<FolderReadDto>(_mapper.ConfigurationProvider)
