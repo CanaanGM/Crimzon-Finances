@@ -14,11 +14,6 @@ namespace ApplicationTests.Folders
     public class DetailsTest : TestBase
     {
 
-        public DetailsTest()
-        {
-
-        }
-
         [Fact]
         public void Should_Get_Folder_Details()
         {
@@ -37,7 +32,7 @@ namespace ApplicationTests.Folders
             var sut = new Details.Handler(context,_mapper, userAccessor.Object);
             var result = sut.Handle(new Details.Query { Id = id }, CancellationToken.None).Result;
 
-            Assert.NotNull(result);
+            Assert.NotNull(result.Value);
             Assert.True(result.IsSuccess);
             Assert.Equal(id, result.Value.Id);
 

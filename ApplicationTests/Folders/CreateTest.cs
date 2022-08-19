@@ -15,10 +15,6 @@ namespace ApplicationTests.Folders
 
     public class CreateTest : TestBase
     {
-        public  CreateTest()
-        {
-
-        }
 
         [Fact]
         public void Should_Create_Folder()
@@ -42,6 +38,25 @@ namespace ApplicationTests.Folders
             Assert.NotNull(result);
             Assert.True(result.IsSuccess);
 
+        }
+
+        [Fact]
+        public void Should_Fail_If_No_User()
+        {
+
+            var context = GetDbContext();
+
+            var folderCommend = new Create.Command
+            {
+                Folder = new Application.DTOs.FolderWriteDto { Name = "test" }
+            };
+
+
+            var sut = new Create.Handler(context, userAccessor.Object);
+            var result = sut.Handle(folderCommend, CancellationToken.None).Result;
+
+            Assert.NotNull(result);
+            Assert.False(result.IsSuccess);
         }
     }
 }

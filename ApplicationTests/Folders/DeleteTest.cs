@@ -29,5 +29,23 @@ namespace ApplicationTests.Folders
             Assert.True(result.IsSuccess);
             Assert.Null(await context.Folders.FindAsync(id));
         }
+
+        [Fact]
+        public async void Should_Fail_2_delete_folder_If_No_User()
+        {
+            var context = GetDbContext();
+            Guid id = new Guid("69f31c5d-5872-4d86-841b-9bca0a2bc79e");
+
+
+            context.Folders.Add(new Domain.Folder { Id = id, Name = "test", UserId = "1" });
+            await context.SaveChangesAsync();
+
+
+            var sut = new Delete.Handler(context, userAccessor.Object);
+            var result = sut.Handle(new Delete.Command { Id = id }, CancellationToken.None).Result;
+
+            Assert.False(result.IsSuccess);
+            Assert.NotNull(await context.Folders.FindAsync(id));
+        }
     }
 }
