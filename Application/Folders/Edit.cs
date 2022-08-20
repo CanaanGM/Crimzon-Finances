@@ -24,7 +24,7 @@ namespace Application.Folders
 {
     public class Edit
     {
-        public class Command : IRequest<Result<Unit>>
+        public class Command : IRequest<Result<FolderReadDto>>
         {
             public Guid Id { get; set; }
             public FolderWriteDto Folder { get; set; }
@@ -40,7 +40,7 @@ namespace Application.Folders
             }
         }
 
-        public class Handler : IRequestHandler<Command, Result<Unit>>
+        public class Handler : IRequestHandler<Command, Result<FolderReadDto>>
         {
             private readonly DataContext _dataContext;
             private readonly IMapper _mapper;
@@ -53,18 +53,18 @@ namespace Application.Folders
                 _userAccessor = userAccessor;
 
             }
-            public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
+            public async Task<Result<FolderReadDto>> Handle(Command request, CancellationToken cancellationToken)
             {
                 var folder = await _dataContext.Folders.FindAsync(request.Id);
                 var user = await _dataContext.Users.FirstOrDefaultAsync(x => x.Id == _userAccessor.GetUserId());
                 if (user == null || folder == null || folder.UserId != user.Id)
-                    return Result<Unit>.Failure("Failed to edit dept");
+                    return Result<FolderReadDto>.Failure("Failed to edit dept");
 
                 _mapper.Map(request.Folder, folder);
                 var res = await _dataContext.SaveChangesAsync() > 0;
                 return !res
-                          ? Result<Unit>.Failure("Failed to edit folder")
-                          : Result<Unit>.Success(Unit.Value);
+                          ? Result<FolderReadDto>.Failure("Failed to edit folder")
+                          : Result<FolderReadDto>.Success(_mapper.Map<FolderReadDto>(folder));
 
             }
         }
