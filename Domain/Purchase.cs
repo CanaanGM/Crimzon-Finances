@@ -27,9 +27,6 @@ namespace Domain
         public AppUser User { get; set; }
 
 
-        public Guid FolderId { get; set; }
-        public Folder Folder { get; set; }
-
 
     }
 }

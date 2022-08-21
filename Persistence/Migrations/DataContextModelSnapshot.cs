@@ -103,7 +103,7 @@ namespace Persistence.Migrations
                     b.Property<double>("AmountRemaining")
                         .HasColumnType("float");
 
-                    b.Property<DateTime>("DateMade")
+                    b.Property<DateTime>("DateDeptWasMade")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("DatePaidOff")
@@ -113,7 +113,7 @@ namespace Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("FolderId")
+                    b.Property<Guid?>("FolderId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name")
@@ -155,38 +155,6 @@ namespace Persistence.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Folders");
-                });
-
-            modelBuilder.Entity("Domain.Payment", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<double>("Amount")
-                        .HasColumnType("float");
-
-                    b.Property<DateTime>("DateMade")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("DeptId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DeptId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Payments");
                 });
 
             modelBuilder.Entity("Domain.Photo", b =>
@@ -238,7 +206,7 @@ namespace Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("FolderId")
+                    b.Property<Guid?>("FolderId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name")
@@ -327,7 +295,7 @@ namespace Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("FolderId")
+                    b.Property<Guid?>("FolderId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("FromAccount")
@@ -507,9 +475,7 @@ namespace Persistence.Migrations
                 {
                     b.HasOne("Domain.Folder", "Folder")
                         .WithMany("Depts")
-                        .HasForeignKey("FolderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("FolderId");
 
                     b.HasOne("Domain.AppUser", "User")
                         .WithMany("Depts")
@@ -525,29 +491,10 @@ namespace Persistence.Migrations
             modelBuilder.Entity("Domain.Folder", b =>
                 {
                     b.HasOne("Domain.AppUser", "User")
-                        .WithMany()
+                        .WithMany("Folders")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Domain.Payment", b =>
-                {
-                    b.HasOne("Domain.Dept", "Dept")
-                        .WithMany("Payments")
-                        .HasForeignKey("DeptId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Domain.AppUser", "User")
-                        .WithMany("Payments")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Dept");
 
                     b.Navigation("User");
                 });
@@ -567,9 +514,7 @@ namespace Persistence.Migrations
                 {
                     b.HasOne("Domain.Folder", "Folder")
                         .WithMany("Purchases")
-                        .HasForeignKey("FolderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("FolderId");
 
                     b.HasOne("Domain.AppUser", "User")
                         .WithMany("Purchases")
@@ -597,9 +542,7 @@ namespace Persistence.Migrations
                 {
                     b.HasOne("Domain.Folder", "Folder")
                         .WithMany("Transfers")
-                        .HasForeignKey("FolderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("FolderId");
 
                     b.HasOne("Domain.AppUser", "User")
                         .WithMany("Transfers")
@@ -667,18 +610,13 @@ namespace Persistence.Migrations
                 {
                     b.Navigation("Depts");
 
-                    b.Navigation("Payments");
+                    b.Navigation("Folders");
 
                     b.Navigation("Purchases");
 
                     b.Navigation("RefreshTokens");
 
                     b.Navigation("Transfers");
-                });
-
-            modelBuilder.Entity("Domain.Dept", b =>
-                {
-                    b.Navigation("Payments");
                 });
 
             modelBuilder.Entity("Domain.Folder", b =>

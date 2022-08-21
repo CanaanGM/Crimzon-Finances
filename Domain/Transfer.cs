@@ -23,7 +23,6 @@ namespace Domain
         public string UserId { get; set; }
         public AppUser User { get; set; }
 
-        public Guid FolderId { get; set; }
-        public Folder Folder { get; set; }
+
     }
 }
