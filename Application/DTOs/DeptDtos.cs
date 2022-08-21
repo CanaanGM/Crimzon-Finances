@@ -18,7 +18,7 @@ namespace Application.DTOs
         public DateTime DatePaidOff { get; set; }
         public bool PaidOff { get; set; }
         public string Deptor { get; set; }
-        public FolderReadDto Folder { get; set; }
+        public FolderReadDto? Folder { get; set; }
         public ICollection<PaymentReadDto> Payments { get; set; }
     }
 
@@ -29,8 +29,10 @@ namespace Application.DTOs
         public double AmountRemaining { get; set; }
         public DateTime DateMade { get; set; }
         public DateTime DatePaidOff { get; set; }
-        public bool PaidOff { get; set; }
+        public bool PaidOff { get; set; } = false;
         public string Deptor { get; set; }
-        public FolderReadDto Folder { get; set; } // folder by name from F-E ?
+        public FolderReadDto? Folder { get; set; } // folder by name from F-E ?
+        public ICollection<PaymentReadDto>? Payments { get; set; }
+
     }
 }

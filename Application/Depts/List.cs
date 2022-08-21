@@ -44,7 +44,7 @@ namespace Application.Depts
                             x.Id == _userAccessor.GetUserId());
                 if (user == null) return Result<CustomPagedList<DeptReadDto>>.Failure("bitch");
 
-                var query = _context.Purchases
+                var query = _context.Depts
                     .Where(x => x.UserId == user.Id)
                     .ProjectTo<DeptReadDto>(_mapper.ConfigurationProvider)
                     .AsQueryable();
