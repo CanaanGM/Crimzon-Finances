@@ -57,6 +57,7 @@ namespace Application.Invoices
                     return Result<Unit>.Failure("Bitch!");
 
                 _dataContext.Photos.Remove(invoice);
+                purchase.Invoice.Remove(invoice);
                 var res = await _dataContext.SaveChangesAsync() > 0;
                 return !res
                       ? Result<Unit>.Failure("Failed to Delete invoice")

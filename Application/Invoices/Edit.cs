@@ -67,7 +67,7 @@ namespace Application.Invoices
 
                 invoiceFromRequest.Id = request.InvoiceId;
                 _mapper.Map(invoiceFromRequest, invoice);
-
+                purchase.Invoice.Add(invoice);
                 var res = await _dataContext.SaveChangesAsync() > 0;
                 return !res
                       ? Result<Unit>.Failure("Failed to edit invoice")
