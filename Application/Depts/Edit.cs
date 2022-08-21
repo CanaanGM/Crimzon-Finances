@@ -24,7 +24,7 @@ namespace Application.Depts
 {
     public class Edit
     {
-        public class Command : IRequest<Result<Unit>>
+        public class Command : IRequest<Result<DeptReadDto>>
         {
             public Guid Id { get; set; }
             public DeptWriteDto Dept { get; set; }
@@ -40,7 +40,7 @@ namespace Application.Depts
             }
         }
 
-        public class Handler : IRequestHandler<Command, Result<Unit>>
+        public class Handler : IRequestHandler<Command, Result<DeptReadDto>>
         {
 
             private readonly DataContext _dataContext;
@@ -53,18 +53,18 @@ namespace Application.Depts
                 _userAccessor = userAccessor;
             }
 
-            public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
+            public async Task<Result<DeptReadDto>> Handle(Command request, CancellationToken cancellationToken)
             {
                 var dept = await _dataContext.Depts.FindAsync(request.Id);
                 var user = await _dataContext.Users.FirstOrDefaultAsync(x => x.Id == _userAccessor.GetUserId());
                 if (user == null || dept == null || dept.UserId != user.Id)
-                       return Result<Unit>.Failure("Failed to edit dept");
+                       return Result<DeptReadDto>.Failure("Failed to edit dept");
 
                 _mapper.Map(request.Dept, dept);
                 var res = await _dataContext.SaveChangesAsync() > 0;
                 return !res
-                          ? Result<Unit>.Failure("Failed to edit dept")
-                          : Result<Unit>.Success(Unit.Value);
+                          ? Result<DeptReadDto>.Failure("Failed to edit dept")
+                          : Result<DeptReadDto>.Success(_mapper.Map<DeptReadDto>(dept));
             }
         }
     }

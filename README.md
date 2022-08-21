@@ -72,6 +72,10 @@ API for handling finance related crap
 
     dotnet ef database update
 ```
+OR
+```
+ dotnet ef database update --connection "Server=localhost,1435;Database=Finances;User Id=sa;Password=DiLb984ImW"
+```
 #### User Secerets
 
 ```

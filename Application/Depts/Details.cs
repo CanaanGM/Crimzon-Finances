@@ -1,5 +1,6 @@
 ﻿using Application.Core;
 using Application.DTOs;
+using Application.Errors;
 using Application.Interfaces;
 
 using AutoMapper;
@@ -53,9 +54,13 @@ namespace Application.Depts
 
                 var dept = await _dataContext.Depts.FindAsync(request.Id);
 
-                var dept2return = await _dataContext.Depts
-                    .ProjectTo<DeptReadDto>(_mapper.ConfigurationProvider)
-                    .FirstOrDefaultAsync(x => x.Id == request.Id);
+                if (dept == null)
+                    throw new RestException(System.Net.HttpStatusCode.NotFound, new {Dept = "Not Found"});
+
+                var dept2return = _mapper.Map<DeptReadDto>(dept);
+                    //await _dataContext.Depts
+                    //.ProjectTo<DeptReadDto>(_mapper.ConfigurationProvider)
+                    //.FirstOrDefaultAsync(x => x.Id == request.Id);
 
                 return dept.UserId == user.Id
                     ? Result<DeptReadDto>.Success(dept2return)

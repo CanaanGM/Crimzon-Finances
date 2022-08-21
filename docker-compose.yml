@@ -11,10 +11,11 @@ services:
       - "9900:443"
     
   financeDatabase:
-    image: "mcr.microsoft.com/mssql/server"
+    image: "mcr.microsoft.com/mssql/server:2022-latest"
     environment:
         SA_PASSWORD: "DiLb984ImW"
         ACCEPT_EULA: "Y"
+        MSSQL_AGENT_ENABLED: "true"
     ports:
         - "1435:1433" 
     container_name: financeDatabase
