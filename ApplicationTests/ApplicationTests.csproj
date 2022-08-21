@@ -29,10 +29,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Depts\" />
     <Folder Include="Invoices\" />
+    <Folder Include="MockImages\" />
     <Folder Include="Transfers\" />
-    <Folder Include="Payments\" />
     <Folder Include="Purchases\" />
   </ItemGroup>
 
