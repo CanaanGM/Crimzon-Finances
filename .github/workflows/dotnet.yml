@@ -21,5 +21,9 @@ jobs:
       run: dotnet restore '.\Crimzon Finances.sln'
     - name: Build
       run: dotnet build '.\Crimzon Finances.sln' --no-restore
+      
+  test:
+    runs-on: ubuntu-latest
+    steps:
     - name: Test
       run: dotnet test '.\Crimzon Finances.sln' --no-build --verbosity normal
