@@ -17,7 +17,5 @@ namespace Domain
         public ICollection<Transfer> Transfers { get; set; } = new List<Transfer>();
         public ICollection<Dept> Depts { get; set; } = new List<Dept>();
         public ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
-        public ICollection<Payment> Payments { get; set; } = new List<Payment>();
-        public ICollection<Folder> Folders { get; set;} = new List<Folder>();   
     }
 }

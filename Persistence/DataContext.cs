@@ -18,9 +18,7 @@ namespace Persistence
         public DbSet<Purchase> Purchases { get; set; }
         public DbSet<Transfer> Transfers { get; set; }
         public DbSet<Photo> Photos { get; set; }
-        public DbSet<Folder> Folders { get; set; }
         public DbSet<Dept> Depts { get; set; }
-        public DbSet<Payment> Payments { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -41,11 +39,11 @@ namespace Persistence
                 .OnDelete(DeleteBehavior.Cascade)
                 ;
 
-            builder.Entity<AppUser>()
-                .HasMany(x => x.Folders)
-                .WithOne(x => x.User)
-                .HasForeignKey(x => x.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
+            //builder.Entity<AppUser>()
+            //    .HasMany(x => x.Folders)
+            //    .WithOne(x => x.User)
+            //    .HasForeignKey(x => x.UserId)
+            //    .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<AppUser>()
                 .HasMany(x => x.Depts)
@@ -59,41 +57,8 @@ namespace Persistence
                 .HasForeignKey(w => w.PurchaseId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            builder.Entity<Folder>()
-                .HasMany(x => x.Depts)
-                .WithOne(x => x.Folder)
-                .HasForeignKey(x => x.FolderId)
-                .OnDelete(DeleteBehavior.Cascade);
 
-            builder.Entity<Folder>()
-                .HasMany(x => x.Purchases)
-                .WithOne(x => x.Folder)
-                .HasForeignKey(x => x.FolderId)
-                .OnDelete(DeleteBehavior.NoAction);
 
-            builder.Entity<Folder>()
-                .HasMany(x => x.Transfers)
-                .WithOne(x => x.Folder)
-                .HasForeignKey(x => x.FolderId)
-                .OnDelete(DeleteBehavior.NoAction);
-
-            builder.Entity<Dept>()
-                .HasMany(x => x.Payments)
-                .WithOne(x => x.Dept)
-                .HasForeignKey(x => x.DeptId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            builder.Entity<Dept>()
-                .HasOne(x => x.Folder)
-                .WithMany(x => x.Depts)
-                .HasForeignKey(x => x.FolderId)
-                .OnDelete(DeleteBehavior.NoAction);
-
-            builder.Entity<Payment>()
-                .HasOne(x => x.Dept)
-                .WithMany(x => x.Payments)
-                .HasForeignKey(x => x.DeptId)
-                .OnDelete(DeleteBehavior.NoAction);
         }
 
     }

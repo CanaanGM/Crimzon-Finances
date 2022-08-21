@@ -12,8 +12,8 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20220502003021_photoPurchaseRelation")]
-    partial class photoPurchaseRelation
+    [Migration("20220821140653_cleanupC")]
+    partial class cleanupC
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -31,9 +31,6 @@ namespace Persistence.Migrations
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
-
-                    b.Property<string>("Bio")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -96,6 +93,72 @@ namespace Persistence.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("Domain.Dept", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<double>("Amount")
+                        .HasColumnType("float");
+
+                    b.Property<double>("AmountRemaining")
+                        .HasColumnType("float");
+
+                    b.Property<DateTime>("DateDeptWasMade")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DatePaidOff")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Deptor")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("FolderId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("PaidOff")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FolderId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Depts");
+                });
+
+            modelBuilder.Entity("Domain.Folder", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Folders");
+                });
+
             modelBuilder.Entity("Domain.Photo", b =>
                 {
                     b.Property<Guid>("Id")
@@ -114,6 +177,10 @@ namespace Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<Guid>("PurchaseId")
                         .HasColumnType("uniqueidentifier");
 
@@ -124,7 +191,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("PurchaseId");
 
-                    b.ToTable("Photo");
+                    b.ToTable("Photos");
                 });
 
             modelBuilder.Entity("Domain.Purchase", b =>
@@ -140,6 +207,9 @@ namespace Persistence.Migrations
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("FolderId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -166,15 +236,49 @@ namespace Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("TransactionId")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("FolderId");
+
                     b.HasIndex("UserId");
 
                     b.ToTable("Purchases");
+                });
+
+            modelBuilder.Entity("Domain.RefreshToken", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("AppUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("Expires")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("Revoked")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AppUserId");
+
+                    b.ToTable("RefreshToken");
                 });
 
             modelBuilder.Entity("Domain.Transfer", b =>
@@ -192,6 +296,9 @@ namespace Persistence.Migrations
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("FolderId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("FromAccount")
                         .IsRequired()
@@ -213,6 +320,9 @@ namespace Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("TransactionId")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("TransferType")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -222,6 +332,8 @@ namespace Persistence.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("FolderId");
 
                     b.HasIndex("UserId");
 
@@ -361,6 +473,34 @@ namespace Persistence.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("Domain.Dept", b =>
+                {
+                    b.HasOne("Domain.Folder", "Folder")
+                        .WithMany("Depts")
+                        .HasForeignKey("FolderId");
+
+                    b.HasOne("Domain.AppUser", "User")
+                        .WithMany("Depts")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Folder");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Domain.Folder", b =>
+                {
+                    b.HasOne("Domain.AppUser", "User")
+                        .WithMany("Folders")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Domain.Photo", b =>
                 {
                     b.HasOne("Domain.Purchase", "Purchase")
@@ -374,22 +514,45 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.Purchase", b =>
                 {
+                    b.HasOne("Domain.Folder", "Folder")
+                        .WithMany("Purchases")
+                        .HasForeignKey("FolderId");
+
                     b.HasOne("Domain.AppUser", "User")
                         .WithMany("Purchases")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("Folder");
+
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Domain.RefreshToken", b =>
+                {
+                    b.HasOne("Domain.AppUser", "AppUser")
+                        .WithMany("RefreshTokens")
+                        .HasForeignKey("AppUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AppUser");
                 });
 
             modelBuilder.Entity("Domain.Transfer", b =>
                 {
+                    b.HasOne("Domain.Folder", "Folder")
+                        .WithMany("Transfers")
+                        .HasForeignKey("FolderId");
+
                     b.HasOne("Domain.AppUser", "User")
                         .WithMany("Transfers")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Folder");
 
                     b.Navigation("User");
                 });
@@ -447,6 +610,21 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.AppUser", b =>
                 {
+                    b.Navigation("Depts");
+
+                    b.Navigation("Folders");
+
+                    b.Navigation("Purchases");
+
+                    b.Navigation("RefreshTokens");
+
+                    b.Navigation("Transfers");
+                });
+
+            modelBuilder.Entity("Domain.Folder", b =>
+                {
+                    b.Navigation("Depts");
+
                     b.Navigation("Purchases");
 
                     b.Navigation("Transfers");

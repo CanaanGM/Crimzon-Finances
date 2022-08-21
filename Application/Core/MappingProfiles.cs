@@ -44,11 +44,7 @@ namespace Application.Core
             CreateMap<Dept, DeptReadDto>().ReverseMap();
             CreateMap<Dept, DeptWriteDto>().ReverseMap();
 
-            CreateMap<Folder, FolderReadDto>().ReverseMap();
-            CreateMap<Folder, FolderWriteDto>().ReverseMap();
 
-            CreateMap<Payment, PaymentReadDto>().ReverseMap();
-            CreateMap<Payment, PaymentWriteDto>().ReverseMap();
 
             //CreateMap<AppUser, >().ReverseMap();
         }
