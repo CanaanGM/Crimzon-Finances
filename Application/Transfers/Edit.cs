@@ -18,7 +18,7 @@ namespace Application.Transfers
 {
     public class Edit
     {
-        public class Command : IRequest<Result<Unit>>
+        public class Command : IRequest<Result<TransferReadDto>>
         {
             public Guid Id { get; set; }
             public TransferWriteDto Transfer { get; set; }
@@ -33,7 +33,7 @@ namespace Application.Transfers
             }
         }
 
-        public class Handler : IRequestHandler<Command, Result<Unit>>
+        public class Handler : IRequestHandler<Command, Result<TransferReadDto>>
         {
             private readonly DataContext _dataContext;
             private readonly IMapper _mapper;
@@ -46,18 +46,18 @@ namespace Application.Transfers
                 _userAccessor = userAccessor;
             }
 
-            public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
+            public async Task<Result<TransferReadDto>> Handle(Command request, CancellationToken cancellationToken)
             {
                 var transfer = await _dataContext.Transfers.FindAsync(request.Id);
                 var user = await _dataContext.Users.FirstOrDefaultAsync(x => x.Id == _userAccessor.GetUserId());
                 if (transfer == null || user == null || transfer.UserId != user.Id)
-                    return Result<Unit>.Failure("Failed to Edit transfer . . .");
+                    return Result<TransferReadDto>.Failure("Failed to Edit transfer . . .");
 
                 _mapper.Map(request.Transfer, transfer);
                 var res = await _dataContext.SaveChangesAsync() > 0;
                 return !res
-                          ? Result<Unit>.Failure("Failed to edit transfer")
-                          : Result<Unit>.Success(Unit.Value);
+                          ? Result<TransferReadDto>.Failure("Failed to edit transfer")
+                          : Result<TransferReadDto>.Success(_mapper.Map<TransferReadDto>(transfer));
             }
         }
     }
