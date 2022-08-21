@@ -16,7 +16,7 @@ namespace Application.Depts
         {
             RuleFor(x => x.Name).NotEmpty();
             RuleFor(x => x.PaidOff).NotEmpty();
-            RuleFor(x => x.DateMade).NotEmpty();
+            RuleFor(x => x.DateDeptWasMade).NotEmpty();
             RuleFor(x => x.Amount).NotEmpty();
             RuleFor(x => x.AmountRemaining).NotEmpty();
         }

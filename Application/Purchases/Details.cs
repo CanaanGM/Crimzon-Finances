@@ -1,5 +1,6 @@
 ﻿using Application.Core;
 using Application.DTOs;
+using Application.Errors;
 using Application.Interfaces;
 
 using AutoMapper;
@@ -47,7 +48,11 @@ namespace Application.Purchases
 
                 var purchase = await _dataContext.Purchases
                     .FindAsync(request.Id);
-                if (user == null || purchase == null || purchase.UserId != user.Id) return Result<PurchaseReadDto>.Failure("bitch");
+                if (purchase == null) throw new RestException(System.Net.HttpStatusCode.NotFound, new { Purchase = "Not Found" });
+                if (user == null || purchase.UserId != user.Id) return Result<PurchaseReadDto>.Failure("bitch");
+
+
+
 
                 var purchase2Return = await _dataContext.Purchases
                     .ProjectTo<PurchaseReadDto>(_mapper.ConfigurationProvider)

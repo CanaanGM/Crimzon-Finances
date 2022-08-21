@@ -58,7 +58,7 @@ namespace Application.Depts
                         Name = request.Dept.Name,
                         Amount = request.Dept.Amount,
                         AmountRemaining = request.Dept.AmountRemaining,
-                        DateDeptWasMade = request.Dept.DateMade,
+                        DateDeptWasMade = request.Dept.DateDeptWasMade,
                         PaidOff = request.Dept.PaidOff,
                         Deptor = request.Dept.Deptor,
                         UserId = user.Id,
