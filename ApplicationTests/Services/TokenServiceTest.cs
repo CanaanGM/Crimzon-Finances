@@ -15,9 +15,9 @@ public class TokenServiceTest : TestBase
 
         var token = GenToken(user);
         
-        var sut = new TokenService(ConfigurationMock.Object);
+        var sut = TokenServiceMock.Object;
 
-        var res = sut.CreateToken(user);
+        var res = sut.CreateToken(user.UserName, user.Id, user.Email);
         
         Assert.NotEmpty(res);
         Assert.Equal(token, res);
@@ -26,11 +26,11 @@ public class TokenServiceTest : TestBase
     [Fact]
     public void Should_Generate_RefreshToken()
     {
-        var sut = new TokenService(ConfigurationMock.Object);
+        var sut =  TokenServiceMock.Object;
         var res = sut.GenerateRefreshToken();
         
         Assert.NotNull(res);
-        Assert.NotEqual(res, sut.GenerateRefreshToken());
+        Assert.Equal(res, sut.GenerateRefreshToken());
     }
 
 }
