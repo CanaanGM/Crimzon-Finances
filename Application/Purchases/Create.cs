@@ -71,7 +71,7 @@ namespace Application.Purchases
                 return !result ? Result<Unit>.Failure("Failed to create Purchase") : Result<Unit>.Success(Unit.Value);
             }
 
-            private async Task<List<Photo>> GeneratePhotosFromRequest(Purchase purchase, PhotoWriteDto photos)
+            public async Task<List<Photo>> GeneratePhotosFromRequest(Purchase purchase, PhotoWriteDto photos)
             {
 
                 List<Photo> photosList = new List<Photo>();
