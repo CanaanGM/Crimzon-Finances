@@ -10,19 +10,20 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 using System.Security.Claims;
+using Application.Interfaces;
 
 namespace API.Controllers
 {
     
     [ApiController]
     [Route("api/[controller]")]
-    public class AccountController : ControllerBase
+    public class AccountController : ControllerBase, IAccountController
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
-        private readonly TokenService _token;
+        private readonly ITokenService _token;
 
-        public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, TokenService token)
+        public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, ITokenService token)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -48,10 +49,8 @@ namespace API.Controllers
         [HttpPost("register")]
         public async Task<ActionResult<UserDto>> Register(AppRegisterDto registerDto)
         {
-            if (await _userManager.Users.AnyAsync(x => x.Email == registerDto.Email)) return BadRequest("Email Taken!");
-            if (await _userManager.Users.AnyAsync(x => x.DisplayName == registerDto.DisplayName)) return BadRequest("Display Name Taken!");
-            if (await _userManager.Users.AnyAsync(x => x.UserName == registerDto.UserName)) return BadRequest("User Name Taken!");
-
+            var taken = await CheckIfUserPropsAreTaken(registerDto);
+            if (taken.Item1 == "Fail") return BadRequest(taken.Item2);
             var user = new AppUser
             {
                 DisplayName = registerDto.DisplayName,
@@ -69,6 +68,20 @@ namespace API.Controllers
             return BadRequest("Problem registering user . . . ");
         }
 
+        public async Task<Tuple<string,string>> CheckIfUserPropsAreTaken(AppRegisterDto registerDto)
+        {
+            if (await _userManager.Users.AnyAsync(x => x.Email == registerDto.Email))
+                return new ("Fail", "Email Taken!");
+            
+            if (await _userManager.Users.AnyAsync(x => x.DisplayName == registerDto.DisplayName))
+                return new("Fail", "DisplayName Taken!");
+            
+            if (await _userManager.Users.AnyAsync(x => x.UserName == registerDto.UserName))
+                return new("Fail","UserName Taken!");
+
+            return new("Success", "move On");
+        }
+
         [Authorize]
         [HttpGet]
         public async Task<ActionResult<UserDto>> GetCurrentUser()
@@ -82,7 +95,7 @@ namespace API.Controllers
         {
             DisplayName = user.DisplayName,
             UserName = user.UserName,
-            Token = _token.CreateToken(user)
+            Token = _token.CreateToken(user.UserName, user.Id, user.Email)
         };
 
         [Authorize]
@@ -102,20 +115,29 @@ namespace API.Controllers
 
         }
 
-        private async Task SetRefreshToken(AppUser appUser)
+        public async Task SetRefreshToken(AppUser appUser)
         {
-            var refreshToken = _token.GenerateRefreshToken();
-
-            appUser.RefreshTokens.Add(refreshToken);
-            await _userManager.UpdateAsync(appUser);
-
-            var cookieOptions = new CookieOptions
+            try
             {
-                HttpOnly = true,
-                Expires = DateTimeOffset.UtcNow.AddDays(7),
-            };
+                var refreshToken = _token.GenerateRefreshToken();
 
-            Response.Cookies.Append("refreshToken", refreshToken.Token, cookieOptions);
+                appUser.RefreshTokens.Add(refreshToken);
+                await _userManager.UpdateAsync(appUser);
+
+                var cookieOptions = new CookieOptions
+                {
+                    HttpOnly = true,
+                    Expires = DateTimeOffset.UtcNow.AddDays(7),
+                };
+
+                Response.Cookies.Append("refreshToken", refreshToken.Token, cookieOptions);
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw e;
+            }
         }
 
 

@@ -3,30 +3,34 @@ using System.Security.Claims;
 using System.Text;
 using API.Services;
 using Application.Core;
+using Application.DTOs;
 using Application.Interfaces;
 
 using AutoMapper;
 using Domain;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Moq;
 
 using Persistence;
+using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 
 namespace ApplicationTests
 {
     public class TestBase
     {
-        public Mock<IHttpContextAccessor> httpContextMock; // not really sure for now 
+        public Mock<IHttpContextAccessor> httpContextAccessorMock; // not really sure for now 
 
         public Mock<IConfiguration> ConfigurationMock;
         public Mock<UserManager<AppUser>> UserManagerMock;
         public Mock<SignInManager<AppUser>> SignInManagerMock;
-        public Mock<TokenService> TokenServiceMock;
+        public Mock<ITokenService> TokenServiceMock;
         public Mock<IUserAccessor> userAccessor ;
+        public Mock<IAccountController> AccountControllerMock;
         public readonly IMapper _mapper;
         public AppUser user;
 
@@ -34,23 +38,7 @@ namespace ApplicationTests
 
         public TestBase()
         {
-            var mockMapper = new MapperConfiguration(cfg => cfg.AddProfile(new MappingProfiles()));
-            _mapper = mockMapper.CreateMapper();
-
-            userAccessor = new Mock<IUserAccessor>();
-            userAccessor.Setup(x => x.GetUsername()).Returns("test");
-            userAccessor.Setup(x => x.GetUserId()).Returns("1");
-
-            UserManagerMock = new Mock<UserManager<AppUser>>();
-            UserManagerMock.Setup(x => x.FindByEmailAsync(It.IsAny<string>())).Returns(It.IsAny<Task<AppUser>>() );
-
-            SignInManagerMock = new Mock<SignInManager<AppUser>>();
-            SignInManagerMock.Setup(x => x.CheckPasswordSignInAsync(It.IsAny<AppUser>(), It.IsAny<string>(), false))
-                .Returns(It.IsAny<Task<SignInResult>>());
             
-            ConfigurationMock = new Mock<IConfiguration>();
-            ConfigurationMock.Setup(x => x[It.IsAny<string>()]).Returns("Is it secret? is it safe?");
-           
             user = new AppUser()
             {
                 UserName = "test",
@@ -58,24 +46,64 @@ namespace ApplicationTests
                 Id = "1",
                 DisplayName = "test"
             };
+            
+            var mockMapper = new MapperConfiguration(cfg => cfg.AddProfile(new MappingProfiles()));
+            _mapper = mockMapper.CreateMapper();
 
-            
-            
-
-            //TokenServiceMock = new Mock<TokenService>();
-            //TokenServiceMock.Setup(x => x.CreateToken(user)).Returns(It.IsAny<string>());
-            //TokenServiceMock.Setup(x => x.GenerateRefreshToken()).Returns(new RefreshToken());
-            
-
-            
-            httpContextMock = new Mock<IHttpContextAccessor>();
+            httpContextAccessorMock = new Mock<IHttpContextAccessor>();
             var context = new DefaultHttpContext();
             var fakeUserId = "1";
             
-            httpContextMock.Setup(x => x.HttpContext.User.FindFirst(It.IsAny<string>())).Returns(It.IsAny<Claim>());
-           // httpContextMock.Setup(x => x.HttpContext.User.FindFirstValue("NameIdentifier")).Returns(It.IsAny<string>());
-           
+            httpContextAccessorMock.Setup(x => x.HttpContext.User.FindFirst(It.IsAny<string>())).Returns(It.IsAny<Claim>());
+            // httpContextMock.Setup(x => x.HttpContext.User.FindFirstValue("NameIdentifier")).Returns(It.IsAny<string>());
             
+            userAccessor = new Mock<IUserAccessor>();
+            userAccessor.Setup(x => x.GetUsername()).Returns("test");
+            userAccessor.Setup(x => x.GetUserId()).Returns("1");
+            
+
+            UserManagerMock = new Mock<UserManager<AppUser>>(Mock.Of<IUserStore<AppUser>>(),null, null, null, null, null, null, null, null );
+            UserManagerMock.Setup(x => x.FindByEmailAsync(It.IsAny<string>()))
+                .Returns( Task.FromResult<AppUser>(user)) ;
+
+            SignInManagerMock = new Mock<SignInManager<AppUser>>(
+                UserManagerMock.Object,
+                httpContextAccessorMock.Object,
+                Mock.Of<IUserClaimsPrincipalFactory<AppUser>>(),
+                null,
+                null,
+                null,
+                null
+            );
+            SignInManagerMock.Setup(x => 
+                    x.CheckPasswordSignInAsync(It.IsAny<AppUser>(), It.IsAny<string>(), false))
+                .Returns(It.IsAny<Task<SignInResult>>());
+
+            SignInManagerMock.Setup(x => 
+                    x.CheckPasswordSignInAsync(It.IsAny<AppUser>(), It.IsAny<string>(), false))
+                .Returns(Task.FromResult<SignInResult>(SignInResult.Success));
+            
+            ConfigurationMock = new Mock<IConfiguration>();
+            ConfigurationMock.Setup(x => x[It.IsAny<string>()]).Returns("Is it secret? is it safe?");
+           
+ 
+
+            
+            
+
+            TokenServiceMock = new Mock<ITokenService>();
+            TokenServiceMock.Setup(x => x.CreateToken(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                .Returns(GenToken(user));
+            TokenServiceMock.Setup(x => x.GenerateRefreshToken())
+                .Returns(new RefreshToken(){AppUser = user, Token = GenToken(user),Expires = DateTime.UtcNow, Revoked = DateTime.UtcNow});
+
+
+
+            AccountControllerMock = new Mock<IAccountController>();
+            AccountControllerMock.Setup(x => x.SetRefreshToken(It.IsAny<AppUser>())).Returns(Task.CompletedTask);
+            AccountControllerMock.Setup(c => c.CheckIfUserPropsAreTaken(It.IsAny<AppRegisterDto>()))
+                .Returns(Task.FromResult<Tuple<string,string>>(new ("Success","nonesense")));
+
         }
 
         public DataContext GetDbContext()
